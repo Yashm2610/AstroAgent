@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-astro-bg text-astro-textMain antialiased selection:bg-astro-purple selection:text-astro-textMain;
+  }
+}
+
+/* Custom micro-animations and gradients */
+.bg-cosmos-gradient {
+  background: radial-gradient(circle at 50% 0%, #16183a 0%, #0a0b16 70%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #f5d471 0%, #dfb73c 50%, #b88f1c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pulsing-border {
+  animation: borderPulse 3s infinite alternate;
+}
+
+@keyframes borderPulse {
+  0% {
+    border-color: rgba(223, 183, 60, 0.15);
+    box-shadow: 0 0 10px rgba(125, 82, 255, 0.05);
+  }
+  100% {
+    border-color: rgba(223, 183, 60, 0.35);
+    box-shadow: 0 0 20px rgba(125, 82, 255, 0.2);
+  }
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0b16;
+}
+::-webkit-scrollbar-thumb {
+  background: #252852;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #393d7c;
+}

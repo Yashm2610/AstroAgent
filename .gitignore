@@ -1,0 +1,28 @@
+# Python environment
+backend/venv/
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/api/__pycache__/
+backend/app/api/routes/__pycache__/
+backend/app/api/schemas/__pycache__/
+backend/app/graph/__pycache__/
+backend/app/services/__pycache__/
+backend/app/tools/__pycache__/
+backend/app/database/__pycache__/
+backend/evals/__pycache__/
+backend/tests/__pycache__/
+backend/**/*.pyc
+
+# Local secrets & databases
+backend/.env
+backend/app/database/sqlite.db
+
+# Frontend dependencies and builds
+frontend/node_modules/
+frontend/dist/
+
+# OS/Editor specific
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
