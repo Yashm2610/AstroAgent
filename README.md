@@ -4,6 +4,18 @@ AstroAgent is a premium AI-driven astrological consultation platform. It integra
 
 ---
 
+## 🎨 Premium UI/UX Overhaul Features
+
+AstroAgent's front-end client has been upgraded with a high-fidelity cosmic theme:
+* **Interactive SVG AstroWheel**: Renders a dynamic, mathematically accurate circular birth chart wheel placing celestial glyphs inside their respective Placidus houses.
+* **Elemental Balance Analyzer**: Computes the distribution of Fire, Earth, Air, and Water elements based on your birth coordinates and key planetary alignments.
+* **Suggested Consultation Prompts**: Tap quick-select chips to instantly analyze Saturn transits, Sun sign lessons, or 10th house career paths.
+* **Reasoning Activity Logs**: Real-time HUD-style progression tracker indicating backend calculation steps (geolocating, chart computation, RAG database lookup).
+* **Collapsible Space-Time Layout**: Toggle sidebar blueprints on desktop and mobile viewports to maximize writing area.
+* **CSS Starry Sky Backdrop**: Smoothly animated parallax stars background and micro-interactions powered by `framer-motion`.
+
+---
+
 ## 🗺️ System Architecture
 
 ```mermaid
