@@ -28,6 +28,7 @@ export default function Chat({ onBack }) {
   const { birthDetails, userId, messages, setMessages, clearChat, isLoading, setIsLoading } = useChatStore();
   const { sendMessageStream } = useStreaming();
   const [activeTab, setActiveTab] = useState('wheel'); // 'wheel' | 'planets' | 'coords'
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -62,7 +63,7 @@ export default function Chat({ onBack }) {
     <div className="flex flex-col md:flex-row h-[90vh] max-w-7xl mx-auto w-full gap-6 px-4 py-4 md:py-6 overflow-hidden">
       
       {/* Sidebar Panel */}
-      <div className="w-full md:w-80 flex flex-col gap-4 flex-shrink-0 h-full overflow-hidden">
+      <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-full md:w-80 opacity-100 flex' : 'w-0 h-0 overflow-hidden opacity-0 pointer-events-none md:hidden'} flex-col gap-4 flex-shrink-0 h-full`}>
         
         {/* Navigation Action */}
         <button
@@ -226,6 +227,14 @@ export default function Chat({ onBack }) {
               </p>
             </div>
           </div>
+          
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-xl bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 text-astro-textMuted hover:text-astro-gold transition-all duration-300 flex items-center gap-1.5 cursor-pointer text-xs font-semibold shadow-glow"
+          >
+            <Layout className="h-4 w-4" />
+            <span className="hidden sm:inline">{sidebarOpen ? 'Hide Blueprint' : 'Show Blueprint'}</span>
+          </button>
         </div>
 
         {/* Chat Messages scroll area */}
