@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import ChatWindow from '../components/chat/ChatWindow';
 import ChatInput from '../components/chat/ChatInput';
 import AstroWheel from '../components/chat/AstroWheel';
+import ElementBalance from '../components/chat/ElementBalance';
 import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout } from 'lucide-react';
 
 const PLANET_SYMBOLS = {
@@ -106,6 +107,7 @@ export default function Chat({ onBack }) {
                   <span>Interactive Chart</span>
                 </h3>
                 <AstroWheel chart={formattedChart} />
+                <ElementBalance chart={formattedChart} />
               </div>
             )}
 
