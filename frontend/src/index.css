@@ -5,33 +5,88 @@
 @layer base {
   body {
     @apply bg-astro-bg text-astro-textMain antialiased selection:bg-astro-purple selection:text-astro-textMain;
+    background-image: 
+      radial-gradient(circle at 50% 0%, #16183a 0%, #0a0b16 70%),
+      radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
+      radial-gradient(white, rgba(255, 255, 255, 0.1) 1px, transparent 3px);
+    background-size: 100% 100%, 550px 550px, 350px 350px;
+    background-position: 0 0, 40px 60px, 130px 270px;
+    background-repeat: no-repeat, repeat, repeat;
+    background-attachment: fixed;
   }
 }
 
 /* Custom micro-animations and gradients */
 .bg-cosmos-gradient {
-  background: radial-gradient(circle at 50% 0%, #16183a 0%, #0a0b16 70%);
+  background: radial-gradient(circle at 50% 0%, #17193b 0%, #090a14 100%);
+}
+
+.bg-cosmic-card {
+  background: linear-gradient(135deg, rgba(20, 22, 45, 0.7) 0%, rgba(13, 14, 30, 0.9) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
 }
 
 .text-gold-gradient {
-  background: linear-gradient(135deg, #f5d471 0%, #dfb73c 50%, #b88f1c 100%);
+  background: linear-gradient(135deg, #ffe596 0%, #dfb73c 50%, #aa8014 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-cosmic-purple {
+  background: linear-gradient(135deg, #a78bfa 0%, #7d52ff 50%, #4c1d95 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .pulsing-border {
-  animation: borderPulse 3s infinite alternate;
+  animation: borderPulse 4s infinite alternate ease-in-out;
+}
+
+.star-twinkle-slow {
+  animation: twinkle 6s infinite ease-in-out;
+}
+
+.star-twinkle-fast {
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.float-slow {
+  animation: float 8s infinite ease-in-out;
+}
+
+.float-medium {
+  animation: float 5s infinite ease-in-out;
+}
+
+.rotate-slow {
+  animation: spinSlow 40s linear infinite;
 }
 
 @keyframes borderPulse {
   0% {
-    border-color: rgba(223, 183, 60, 0.15);
-    box-shadow: 0 0 10px rgba(125, 82, 255, 0.05);
+    border-color: rgba(223, 183, 60, 0.12);
+    box-shadow: 0 0 15px rgba(125, 82, 255, 0.04), inset 0 0 10px rgba(125, 82, 255, 0.02);
   }
   100% {
     border-color: rgba(223, 183, 60, 0.35);
-    box-shadow: 0 0 20px rgba(125, 82, 255, 0.2);
+    box-shadow: 0 0 25px rgba(125, 82, 255, 0.18), inset 0 0 15px rgba(125, 82, 255, 0.08);
   }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Scrollbar styles */
@@ -40,12 +95,13 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0b16;
+  background: #06070d;
 }
 ::-webkit-scrollbar-thumb {
-  background: #252852;
+  background: #1c1e3d;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #393d7c;
+  background: #2a2e5c;
 }
+
