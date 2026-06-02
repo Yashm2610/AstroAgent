@@ -1,14 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChatStore } from '../store/chatStore';
 import { useStreaming } from '../hooks/useStreaming';
 import { api } from '../services/api';
 import ChatWindow from '../components/chat/ChatWindow';
 import ChatInput from '../components/chat/ChatInput';
-import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, RefreshCw } from 'lucide-react';
+import AstroWheel from '../components/chat/AstroWheel';
+import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout } from 'lucide-react';
+
+const PLANET_SYMBOLS = {
+  sun: '☉',
+  moon: '☽',
+  mercury: '☿',
+  venus: '♀',
+  mars: '♂',
+  jupiter: '♃',
+  saturn: '♄',
+  uranus: '♅',
+  neptune: '♆',
+  pluto: '♇',
+  north_node: '☊',
+  south_node: '☋'
+};
 
 export default function Chat({ onBack }) {
   const { birthDetails, userId, messages, setMessages, clearChat, setIsLoading } = useChatStore();
   const { sendMessageStream } = useStreaming();
+  const [activeTab, setActiveTab] = useState('wheel'); // 'wheel' | 'planets' | 'coords'
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -43,7 +60,7 @@ export default function Chat({ onBack }) {
     <div className="flex flex-col md:flex-row h-[90vh] max-w-7xl mx-auto w-full gap-6 px-4 py-4 md:py-6 overflow-hidden">
       
       {/* Sidebar Panel */}
-      <div className="w-full md:w-80 flex flex-col gap-4 flex-shrink-0">
+      <div className="w-full md:w-80 flex flex-col gap-4 flex-shrink-0 h-full overflow-hidden">
         
         {/* Navigation Action */}
         <button
@@ -54,50 +71,127 @@ export default function Chat({ onBack }) {
           <span>Change Birth Details</span>
         </button>
 
-        {/* Natal Profile Card */}
-        <div className="bg-astro-card border border-astro-cardBorder rounded-2xl p-5 shadow-glow relative overflow-hidden">
-          
+        {/* Natal Profile Tabbed Card */}
+        <div className="bg-astro-card border border-astro-cardBorder rounded-2xl p-5 shadow-glow flex flex-col flex-1 overflow-hidden relative">
           <div className="absolute top-0 right-0 h-16 w-16 bg-astro-gold opacity-5 blur-2xl rounded-full"></div>
           
-          <h3 className="text-xs font-bold text-astro-gold uppercase tracking-wider mb-4 flex items-center gap-1.5 font-sans">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Natal Blueprint</span>
-          </h3>
-
-          {/* Profile details list */}
-          <div className="space-y-3 text-sm font-sans mb-5">
-            <div className="flex items-center gap-3">
-              <MapPin className="h-4 w-4 text-astro-textMuted flex-shrink-0" />
-              <span className="truncate text-astro-textMain">{birthDetails?.place}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Calendar className="h-4 w-4 text-astro-textMuted flex-shrink-0" />
-              <span className="text-astro-textMain">{birthDetails?.dob}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Clock className="h-4 w-4 text-astro-textMuted flex-shrink-0" />
-              <span className="text-astro-textMain">{birthDetails?.time} ({birthDetails?.timezone})</span>
-            </div>
+          {/* Tabs header control */}
+          <div className="flex bg-astro-indigo bg-opacity-40 p-1 rounded-xl border border-astro-cardBorder border-opacity-15 mb-4">
+            <button
+              onClick={() => setActiveTab('wheel')}
+              className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'wheel' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+            >
+              Wheel
+            </button>
+            <button
+              onClick={() => setActiveTab('planets')}
+              className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'planets' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+            >
+              Planets
+            </button>
+            <button
+              onClick={() => setActiveTab('coords')}
+              className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'coords' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+            >
+              Coords
+            </button>
           </div>
 
-          <hr className="border-astro-cardBorder border-opacity-35 my-4" />
+          <div className="flex-1 overflow-y-auto pr-1">
+            {/* WHEEL TAB */}
+            {activeTab === 'wheel' && (
+              <div className="space-y-4 animate-fade-in">
+                <h3 className="text-xs font-bold text-astro-gold uppercase tracking-wider flex items-center gap-1.5">
+                  <Orbit className="h-3.5 w-3.5 text-astro-gold" />
+                  <span>Interactive Chart</span>
+                </h3>
+                <AstroWheel chart={formattedChart} />
+              </div>
+            )}
 
-          {/* Golden Chart Summary Card */}
-          <h4 className="text-xs font-semibold text-astro-textMuted uppercase tracking-wider mb-3 font-sans">
-            Key Alignments
-          </h4>
-          <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            <div className="p-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-20 rounded-xl">
-              <div className="text-[10px] text-astro-textMuted uppercase">Rising</div>
-              <div className="font-bold text-astro-gold truncate mt-0.5">{birthDetails?.chart?.ascendant || 'Unknown'}</div>
+            {/* PLANETS TAB */}
+            {activeTab === 'planets' && (
+              <div className="space-y-4 animate-fade-in">
+                <h3 className="text-xs font-bold text-astro-gold uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-astro-gold" />
+                  <span>Natal Planetary Alignments</span>
+                </h3>
+                <div className="space-y-2">
+                  {Object.entries(planets).map(([key, planet]) => {
+                    const symbol = PLANET_SYMBOLS[key] || '★';
+                    return (
+                      <div key={key} className="flex justify-between items-center text-xs px-3 py-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-10 rounded-xl hover:border-opacity-30 transition-all duration-300">
+                        <span className="font-semibold text-astro-textMain flex items-center gap-2">
+                          <span className="text-astro-gold text-sm">{symbol}</span>
+                          <span className="capitalize">{key.replace('_', ' ')}</span>
+                          {planet.is_retrograde && (
+                            <span className="text-[8px] bg-red-950 text-red-400 px-1 py-0.2 rounded border border-red-900 border-opacity-40 uppercase font-mono font-black">R</span>
+                          )}
+                        </span>
+                        <span className="text-astro-textMuted font-mono font-medium">
+                          {planet.degree}° {planet.sign} (H{planet.house})
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* COORDS TAB */}
+            {activeTab === 'coords' && (
+              <div className="space-y-4 animate-fade-in">
+                <h3 className="text-xs font-bold text-astro-gold uppercase tracking-wider flex items-center gap-1.5">
+                  <Compass className="h-3.5 w-3.5 text-astro-gold" />
+                  <span>Space-Time Reference</span>
+                </h3>
+                <div className="space-y-3 text-xs bg-astro-indigo bg-opacity-20 border border-astro-cardBorder border-opacity-15 p-4 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-4 w-4 text-astro-gold flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] text-astro-textMuted uppercase">Birthplace</div>
+                      <div className="font-semibold text-astro-textMain truncate max-w-[180px]">{birthDetails?.place}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Calendar className="h-4 w-4 text-astro-gold flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] text-astro-textMuted uppercase">Date</div>
+                      <div className="font-semibold text-astro-textMain">{birthDetails?.dob}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-4 w-4 text-astro-gold flex-shrink-0" />
+                    <div>
+                      <div className="text-[10px] text-astro-textMuted uppercase">Local Time (TZ)</div>
+                      <div className="font-semibold text-astro-textMain">{birthDetails?.time} ({birthDetails?.timezone})</div>
+                    </div>
+                  </div>
+                  <hr className="border-astro-cardBorder border-opacity-20 my-2" />
+                  <div className="grid grid-cols-2 gap-2 font-mono text-[10px] text-astro-textMuted">
+                    <div>Lat: {Number(birthDetails?.lat).toFixed(4)}°</div>
+                    <div>Lon: {Number(birthDetails?.lon).toFixed(4)}°</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <hr className="border-astro-cardBorder border-opacity-15 my-4" />
+
+          {/* Quick Stats Summary */}
+          <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
+            <div className="p-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-10 rounded-xl">
+              <div className="text-astro-textMuted uppercase text-[8px]">Ascendant</div>
+              <div className="font-bold text-astro-gold truncate mt-0.5">{formattedChart.ascendant || 'Unknown'}</div>
             </div>
-            <div className="p-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-20 rounded-xl">
-              <div className="text-[10px] text-astro-textMuted uppercase">Sun</div>
-              <div className="font-bold text-astro-gold truncate mt-0.5">{birthDetails?.chart?.sun || 'Unknown'}</div>
+            <div className="p-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-10 rounded-xl">
+              <div className="text-astro-textMuted uppercase text-[8px]">Sun Sign</div>
+              <div className="font-bold text-astro-gold truncate mt-0.5">{formattedChart.sun || 'Unknown'}</div>
             </div>
-            <div className="p-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-20 rounded-xl">
-              <div className="text-[10px] text-astro-textMuted uppercase">Moon</div>
-              <div className="font-bold text-astro-gold truncate mt-0.5">{birthDetails?.chart?.moon || 'Unknown'}</div>
+            <div className="p-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-10 rounded-xl">
+              <div className="text-astro-textMuted uppercase text-[8px]">Moon Sign</div>
+              <div className="font-bold text-astro-gold truncate mt-0.5">{formattedChart.moon || 'Unknown'}</div>
             </div>
           </div>
         </div>
@@ -105,10 +199,10 @@ export default function Chat({ onBack }) {
         {/* Clear chat button */}
         <button
           onClick={handleClearChat}
-          className="mt-auto flex items-center justify-center gap-2 py-3 border border-red-500 border-opacity-30 text-red-400 hover:bg-red-950 hover:bg-opacity-20 rounded-xl transition duration-200 text-xs font-semibold cursor-pointer"
+          className="flex items-center justify-center gap-2 py-2.5 border border-red-500 border-opacity-20 text-red-400 hover:bg-red-950 hover:bg-opacity-20 rounded-xl transition duration-200 text-xs font-semibold cursor-pointer"
         >
           <Trash2 className="h-4 w-4" />
-          <span>Clear History</span>
+          <span>Clear Consultation</span>
         </button>
       </div>
 
