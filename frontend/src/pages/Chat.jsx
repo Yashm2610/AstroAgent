@@ -6,6 +6,7 @@ import ChatWindow from '../components/chat/ChatWindow';
 import ChatInput from '../components/chat/ChatInput';
 import AstroWheel from '../components/chat/AstroWheel';
 import ElementBalance from '../components/chat/ElementBalance';
+import AstroPrompts from '../components/chat/AstroPrompts';
 import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout } from 'lucide-react';
 
 const PLANET_SYMBOLS = {
@@ -24,7 +25,7 @@ const PLANET_SYMBOLS = {
 };
 
 export default function Chat({ onBack }) {
-  const { birthDetails, userId, messages, setMessages, clearChat, setIsLoading } = useChatStore();
+  const { birthDetails, userId, messages, setMessages, clearChat, isLoading, setIsLoading } = useChatStore();
   const { sendMessageStream } = useStreaming();
   const [activeTab, setActiveTab] = useState('wheel'); // 'wheel' | 'planets' | 'coords'
 
@@ -232,6 +233,7 @@ export default function Chat({ onBack }) {
 
         {/* Message Input box */}
         <div className="p-4 border-t border-astro-cardBorder border-opacity-30 bg-astro-indigo bg-opacity-10">
+          <AstroPrompts onSelect={sendMessageStream} disabled={isLoading} />
           <ChatInput onSend={sendMessageStream} />
         </div>
       </div>
