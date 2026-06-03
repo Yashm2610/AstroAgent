@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useChatStore } from '../../store/chatStore';
 import { api } from '../../services/api';
+import { playCosmicChime } from '../../services/soundEffects';
 import { MapPin, Calendar, Clock, Loader2, Sparkles, HelpCircle } from 'lucide-react';
 
 export default function BirthForm({ onSuccess }) {
@@ -40,6 +41,7 @@ export default function BirthForm({ onSuccess }) {
       const response = await api.submitBirthDetails(userId, formattedDate, time, place);
 
       if (response.success) {
+        playCosmicChime();
         setBirthDetails({
           dob: formattedDate,
           time,

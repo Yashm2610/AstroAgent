@@ -3,11 +3,13 @@ import { useChatStore } from './store/chatStore';
 import Home from './pages/Home';
 import BirthForm from './components/forms/BirthForm';
 import Chat from './pages/Chat';
-import { Moon, Sparkles } from 'lucide-react';
+import { Moon, Sparkles, Volume2, VolumeX } from 'lucide-react';
+import { toggleMuteStatus, getMuteStatus } from './services/soundEffects';
 
 export default function App() {
   const { birthDetails, setBirthDetails, theme, setTheme } = useChatStore();
   const [view, setView] = useState('home'); // 'home' | 'birth-form' | 'chat'
+  const [muted, setMuted] = useState(getMuteStatus());
 
   // Apply theme class to body
   useEffect(() => {
@@ -67,6 +69,18 @@ export default function App() {
               <option value="silver" className="bg-[#06080e] text-[#dfb73c]">Silver</option>
             </select>
           </div>
+
+          {/* Mute Toggle */}
+          <button
+            onClick={() => {
+              const nextMuted = toggleMuteStatus();
+              setMuted(nextMuted);
+            }}
+            className="p-1.5 rounded-full bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 text-astro-gold hover:text-astro-goldHover transition cursor-pointer"
+            title={muted ? "Unmute sound effects" : "Mute sound effects"}
+          >
+            {muted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+          </button>
 
           <span className="text-xs text-astro-textMuted font-mono bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 px-3 py-1 rounded-full flex items-center gap-1.5">
             <Sparkles className="h-3 w-3 text-astro-gold" />
