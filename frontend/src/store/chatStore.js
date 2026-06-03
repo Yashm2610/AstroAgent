@@ -6,6 +6,12 @@ export const useChatStore = create((set) => ({
   birthDetails: JSON.parse(localStorage.getItem('astroagent_birth_details')) || null,
   activeTools: [], // tracks executing tools (e.g. ['tool_geocode_place'])
   isLoading: false,
+  theme: localStorage.getItem('astroagent_theme') || 'indigo',
+
+  setTheme: (theme) => {
+    localStorage.setItem('astroagent_theme', theme);
+    set({ theme });
+  },
 
   setBirthDetails: (details) => {
     localStorage.setItem('astroagent_birth_details', JSON.stringify(details));

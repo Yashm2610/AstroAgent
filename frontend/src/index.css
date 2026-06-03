@@ -5,14 +5,28 @@
 @layer base {
   body {
     @apply bg-astro-bg text-astro-textMain antialiased selection:bg-astro-purple selection:text-astro-textMain;
-    background-image: 
-      radial-gradient(circle at 50% 0%, #16183a 0%, #0a0b16 70%),
-      radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
-      radial-gradient(white, rgba(255, 255, 255, 0.1) 1px, transparent 3px);
     background-size: 100% 100%, 550px 550px, 350px 350px;
     background-position: 0 0, 40px 60px, 130px 270px;
     background-repeat: no-repeat, repeat, repeat;
     background-attachment: fixed;
+  }
+  body.theme-indigo {
+    background-image: 
+      radial-gradient(circle at 50% 0%, #16183a 0%, #0a0b16 70%),
+      radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
+      radial-gradient(white, rgba(255, 255, 255, 0.1) 1px, transparent 3px);
+  }
+  body.theme-nebula {
+    background-image: 
+      radial-gradient(circle at 50% 0%, #300c3f 0%, #080312 70%),
+      radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
+      radial-gradient(white, rgba(255, 255, 255, 0.08) 1px, transparent 3px);
+  }
+  body.theme-silver {
+    background-image: 
+      radial-gradient(circle at 50% 0%, #222938 0%, #06090e 70%),
+      radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
+      radial-gradient(white, rgba(255, 255, 255, 0.05) 1px, transparent 3px);
   }
 }
 

@@ -6,8 +6,14 @@ import Chat from './pages/Chat';
 import { Moon, Sparkles } from 'lucide-react';
 
 export default function App() {
-  const { birthDetails, setBirthDetails } = useChatStore();
+  const { birthDetails, setBirthDetails, theme, setTheme } = useChatStore();
   const [view, setView] = useState('home'); // 'home' | 'birth-form' | 'chat'
+
+  // Apply theme class to body
+  useEffect(() => {
+    document.body.className = '';
+    document.body.classList.add(`theme-${theme}`);
+  }, [theme]);
 
   // Restore session if details are stored in localStorage
   useEffect(() => {
@@ -48,6 +54,20 @@ export default function App() {
         </div>
         
         <div className="flex items-center gap-3">
+          {/* Theme Selector */}
+          <div className="flex items-center gap-1.5 bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 px-2.5 py-1 rounded-full text-[10px] font-mono">
+            <span className="text-astro-textMuted uppercase">Theme:</span>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="bg-transparent text-astro-gold font-bold focus:outline-none cursor-pointer uppercase text-[10px] border-none outline-none"
+            >
+              <option value="indigo" className="bg-[#0a0b16] text-[#dfb73c]">Indigo</option>
+              <option value="nebula" className="bg-[#080312] text-[#dfb73c]">Nebula</option>
+              <option value="silver" className="bg-[#06080e] text-[#dfb73c]">Silver</option>
+            </select>
+          </div>
+
           <span className="text-xs text-astro-textMuted font-mono bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 px-3 py-1 rounded-full flex items-center gap-1.5">
             <Sparkles className="h-3 w-3 text-astro-gold" />
             <span>v1.0.0</span>
