@@ -7,6 +7,7 @@ import ChatInput from '../components/chat/ChatInput';
 import AstroWheel from '../components/chat/AstroWheel';
 import ElementBalance from '../components/chat/ElementBalance';
 import AstroPrompts from '../components/chat/AstroPrompts';
+import { PLANET_DESCRIPTIONS, ZODIAC_DESCRIPTIONS } from '../services/astrologyInterpretations';
 import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout } from 'lucide-react';
 
 const PLANET_SYMBOLS = {
@@ -29,6 +30,7 @@ export default function Chat({ onBack }) {
   const { sendMessageStream } = useStreaming();
   const [activeTab, setActiveTab] = useState('wheel'); // 'wheel' | 'planets' | 'coords'
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedPlanet, setSelectedPlanet] = useState(null);
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -124,7 +126,11 @@ export default function Chat({ onBack }) {
                   {Object.entries(planets).map(([key, planet]) => {
                     const symbol = PLANET_SYMBOLS[key] || '★';
                     return (
-                      <div key={key} className="flex justify-between items-center text-xs px-3 py-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-10 rounded-xl hover:border-opacity-30 transition-all duration-300">
+                      <div 
+                        key={key} 
+                        onClick={() => setSelectedPlanet({ key, ...planet, symbol })}
+                        className="flex justify-between items-center text-xs px-3 py-2 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-10 rounded-xl hover:border-opacity-30 hover:bg-opacity-50 transition-all duration-300 cursor-pointer"
+                      >
                         <span className="font-semibold text-astro-textMain flex items-center gap-2">
                           <span className="text-astro-gold text-sm">{symbol}</span>
                           <span className="capitalize">{key.replace('_', ' ')}</span>
@@ -246,6 +252,47 @@ export default function Chat({ onBack }) {
           <ChatInput onSend={sendMessageStream} />
         </div>
       </div>
+
+      {/* Interpretation Modal overlay */}
+      {selectedPlanet && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm">
+          <div className="bg-astro-card border border-astro-cardBorder rounded-2xl max-w-sm w-full p-6 shadow-glow relative overflow-hidden animate-fade-in text-sans">
+            <div className="absolute top-0 right-0 h-16 w-16 bg-astro-gold opacity-10 blur-2xl rounded-full"></div>
+            
+            <button 
+              onClick={() => setSelectedPlanet(null)}
+              className="absolute top-4 right-4 text-astro-textMuted hover:text-astro-gold transition-colors text-sm font-semibold cursor-pointer"
+            >
+              ✕
+            </button>
+            
+            <div className="flex items-center gap-3.5 mb-4 border-b border-astro-cardBorder border-opacity-20 pb-3">
+              <span className="text-3xl text-astro-gold">{selectedPlanet.symbol}</span>
+              <div>
+                <h3 className="text-base font-bold text-astro-textMain capitalize">{selectedPlanet.name}</h3>
+                <p className="text-[10px] text-astro-gold font-mono uppercase tracking-wider">
+                  {selectedPlanet.degree}° in {selectedPlanet.sign} — House {selectedPlanet.house}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-xs leading-relaxed text-astro-textMain">
+              <div>
+                <span className="text-[10px] font-bold text-astro-textMuted uppercase block mb-1">Planet Dynamics</span>
+                <p className="text-astro-textMuted">{PLANET_DESCRIPTIONS[selectedPlanet.key] || "Governs key vibrational lessons and planetary energies."}</p>
+              </div>
+              <div>
+                <span className="text-[10px] font-bold text-astro-textMuted uppercase block mb-1">Sign Expression</span>
+                <p className="text-astro-textMuted">{ZODIAC_DESCRIPTIONS[selectedPlanet.sign] || "Expressed through the energetic modes of this zodiac house."}</p>
+              </div>
+              <div className="bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-10 p-3 rounded-xl font-mono text-[9px] text-astro-textMuted">
+                <span className="text-astro-gold font-bold uppercase block mb-1">Celestial Synthesis</span>
+                Your {selectedPlanet.name} qualities are expressed in a {selectedPlanet.sign.toLowerCase()} manner within your {selectedPlanet.house}th house of life experiences.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
