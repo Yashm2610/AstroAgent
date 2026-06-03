@@ -10,6 +10,9 @@ AstroAgent's front-end client has been upgraded with a high-fidelity cosmic them
 * **Interactive SVG AstroWheel**: Renders a dynamic, mathematically accurate circular birth chart wheel placing celestial glyphs inside their respective Placidus houses.
 * **Elemental Balance Analyzer**: Computes the distribution of Fire, Earth, Air, and Water elements based on your birth coordinates and key planetary alignments.
 * **Suggested Consultation Prompts**: Tap quick-select chips to instantly analyze Saturn transits, Sun sign lessons, or 10th house career paths.
+* **Clickable Planetary Interpretations**: Click any planet row in the sidebar to open a detailed modal overlay showing planet dynamics, sign expressions, and a synthesized advisory note.
+* **Web Audio API Chime Synth**: Synthesizes custom harmonic sine-wave chimes for chart generation and incoming message notifications with a global mute toggle.
+* **Dynamic Cosmic Theme Switcher**: Toggle between Cosmic Indigo (default dark), Deep Nebula (rich violet/plum), and Lunar Silver (cool steel grey) visual themes.
 * **Reasoning Activity Logs**: Real-time HUD-style progression tracker indicating backend calculation steps (geolocating, chart computation, RAG database lookup).
 * **Collapsible Space-Time Layout**: Toggle sidebar blueprints on desktop and mobile viewports to maximize writing area.
 * **CSS Starry Sky Backdrop**: Smoothly animated parallax stars background and micro-interactions powered by `framer-motion`.
