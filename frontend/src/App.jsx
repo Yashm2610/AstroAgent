@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import BirthForm from './components/forms/BirthForm';
 import Chat from './pages/Chat';
 import { Moon, Sparkles, Volume2, VolumeX } from 'lucide-react';
-import { toggleMuteStatus, getMuteStatus } from './services/soundEffects';
+import { toggleMuteStatus, getMuteStatus, startAmbientDrone, stopAmbientDrone, getDominantElement } from './services/soundEffects';
 import MouseTrail from './components/chat/MouseTrail';
 
 export default function App() {
@@ -83,6 +83,12 @@ export default function App() {
             onClick={() => {
               const nextMuted = toggleMuteStatus();
               setMuted(nextMuted);
+              if (nextMuted) {
+                stopAmbientDrone();
+              } else if (view === 'chat' && birthDetails && birthDetails.chart) {
+                const element = getDominantElement(birthDetails.chart);
+                startAmbientDrone(element);
+              }
             }}
             className="p-1.5 rounded-full bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 text-astro-gold hover:text-astro-goldHover transition cursor-pointer"
             title={muted ? "Unmute sound effects" : "Mute sound effects"}

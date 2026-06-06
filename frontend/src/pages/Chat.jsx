@@ -8,7 +8,7 @@ import AstroWheel from '../components/chat/AstroWheel';
 import ElementBalance from '../components/chat/ElementBalance';
 import AstroPrompts from '../components/chat/AstroPrompts';
 import { PLANET_DESCRIPTIONS, ZODIAC_DESCRIPTIONS } from '../services/astrologyInterpretations';
-import { playMessageChime } from '../services/soundEffects';
+import { playMessageChime, getDominantElement, startAmbientDrone, stopAmbientDrone } from '../services/soundEffects';
 import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout } from 'lucide-react';
 
 const PLANET_SYMBOLS = {
@@ -57,6 +57,17 @@ export default function Chat({ onBack }) {
       }
     }
   }, [messages.length]);
+
+  // Start element-based ambient drone soundscape on mount, stop on unmount
+  useEffect(() => {
+    if (birthDetails && birthDetails.chart) {
+      const element = getDominantElement(birthDetails.chart);
+      startAmbientDrone(element);
+    }
+    return () => {
+      stopAmbientDrone();
+    };
+  }, [birthDetails]);
 
   const handleClearChat = async () => {
     if (window.confirm('Are you sure you want to clear your cosmic consultation history?')) {
