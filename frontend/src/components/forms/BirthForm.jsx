@@ -72,6 +72,9 @@ export default function BirthForm({ onSuccess }) {
     place: "Latitude and longitude coordinates resolve local timezone offsets and horizon lines."
   };
 
+  const completedFields = [dob, time, place].filter(Boolean).length;
+  const progressPercent = Math.round((completedFields / 3) * 100);
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
@@ -87,6 +90,27 @@ export default function BirthForm({ onSuccess }) {
         <p className="text-xs text-astro-textMuted mt-1.5 font-sans leading-relaxed">
           Enter your precise birth parameters to geocode coordinates and compute planet houses.
         </p>
+      </div>
+
+      {/* Progress completeness gauge */}
+      <div className="mb-6 bg-astro-indigo bg-opacity-40 p-3.5 rounded-xl border border-astro-cardBorder border-opacity-10">
+        <div className="flex justify-between items-center text-[10px] uppercase font-mono tracking-wider mb-1.5">
+          <span className="text-astro-textMuted">Profile Completeness</span>
+          <span className="text-astro-gold font-bold">{progressPercent}%</span>
+        </div>
+        <div className="h-1.5 w-full bg-[#0a0b16] rounded-full overflow-hidden">
+          <motion.div 
+            className="h-full bg-gradient-to-r from-astro-purple to-astro-gold"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+        <div className="mt-2 text-[9px] text-astro-textMuted font-mono flex justify-between">
+          <span className={dob ? "text-green-400 font-semibold" : "text-astro-textMuted"}>{dob ? "✓ Date" : "○ Date"}</span>
+          <span className={time ? "text-green-400 font-semibold" : "text-astro-textMuted"}>{time ? "✓ Time" : "○ Time"}</span>
+          <span className={place ? "text-green-400 font-semibold" : "text-astro-textMuted"}>{place ? "✓ Place" : "○ Place"}</span>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
