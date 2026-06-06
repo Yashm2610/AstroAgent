@@ -46,6 +46,11 @@ const HOUSE_INFO = {
   12: { title: "12th House", desc: "Subconscious, spiritual growth, secrets, solitude." }
 };
 
+const SIGN_ORDER = {
+  'Aries': 0, 'Taurus': 1, 'Gemini': 2, 'Cancer': 3, 'Leo': 4, 'Virgo': 5,
+  'Libra': 6, 'Scorpio': 7, 'Sagittarius': 8, 'Capricorn': 9, 'Aquarius': 10, 'Pisces': 11
+};
+
 export default function AstroWheel({ chart }) {
   if (!chart || !chart.planets) {
     return (
@@ -132,57 +137,124 @@ export default function AstroWheel({ chart }) {
     );
   }
 
-  // Render planetary icons inside the wheel
-  const planetElements = [];
+  // 2. Precompute coordinates for all planets
+  const planetCoords = {};
   for (let houseNum = 1; houseNum <= 12; houseNum++) {
     const planetsInHouse = housePlanets[houseNum];
     const numPlanets = planetsInHouse.length;
 
     planetsInHouse.forEach((planet, index) => {
-      // Wedge center angle
       const startAngle = (houseNum - 1) * 30;
       const midAngle = startAngle + 15;
       
-      // Distribute multiple planets radially to avoid overlap
-      let r = 68; // default middle radius
+      let r = 68;
       if (numPlanets > 1) {
         const minR = 45;
         const maxR = 82;
         r = minR + (index / (numPlanets - 1)) * (maxR - minR);
       }
-
-      const coords = getCoordinates(midAngle, r);
-      const glyph = PLANET_GLYPHS[planet.key] || { symbol: '★', color: '#dfb73c', name: planet.name };
-
-      planetElements.push(
-        <g key={`planet-node-${planet.key}`}>
-          <motion.circle
-            whileHover={{ scale: 1.4 }}
-            cx={coords.x}
-            cy={coords.y}
-            r="7"
-            fill="rgba(10, 11, 22, 0.9)"
-            stroke={glyph.color}
-            strokeWidth="1.2"
-            className="cursor-pointer"
-          />
-          <text
-            x={coords.x}
-            y={coords.y + 2.5}
-            fill={glyph.color}
-            fontSize="7"
-            textAnchor="middle"
-            fontFamily="sans-serif"
-            className="pointer-events-none font-bold"
-          >
-            {glyph.symbol}
-          </text>
-          {/* Custom micro-tooltip representation */}
-          <title>{`${glyph.name}: ${planet.degree}° in ${planet.sign} (House ${planet.house})`}</title>
-        </g>
-      );
+      planetCoords[planet.key] = getCoordinates(midAngle, r);
     });
   }
+
+  // 3. Render aspect lines between planets
+  const aspectLines = [];
+  const planetKeys = Object.keys(chart.planets);
+  for (let i = 0; i < planetKeys.length; i++) {
+    for (let j = i + 1; j < planetKeys.length; j++) {
+      const p1Key = planetKeys[i];
+      const p2Key = planetKeys[j];
+      const p1 = chart.planets[p1Key];
+      const p2 = chart.planets[p2Key];
+      
+      if (!p1.sign || !p2.sign || !planetCoords[p1Key] || !planetCoords[p2Key]) continue;
+      
+      const idx1 = SIGN_ORDER[p1.sign];
+      const idx2 = SIGN_ORDER[p2.sign];
+      if (idx1 === undefined || idx2 === undefined) continue;
+      
+      const lon1 = idx1 * 30 + p1.degree;
+      const lon2 = idx2 * 30 + p2.degree;
+      
+      let diff = Math.abs(lon1 - lon2);
+      if (diff > 180) diff = 360 - diff;
+      
+      let color = null;
+      let label = '';
+      let strokeDash = '';
+      
+      if (Math.abs(diff - 180) < 6) {
+        color = '#ff1744'; // Red for Opposition
+        label = 'Opposition';
+      } else if (Math.abs(diff - 90) < 6) {
+        color = '#b388ff'; // Purple for Square
+        label = 'Square';
+      } else if (Math.abs(diff - 120) < 6) {
+        color = '#00e5ff'; // Blue for Trine
+        label = 'Trine';
+      } else if (Math.abs(diff - 60) < 5) {
+        color = '#81c784'; // Green for Sextile
+        label = 'Sextile';
+        strokeDash = '2 2';
+      }
+      
+      if (color) {
+        const c1 = planetCoords[p1Key];
+        const c2 = planetCoords[p2Key];
+        aspectLines.push(
+          <line
+            key={`aspect-${p1Key}-${p2Key}`}
+            x1={c1.x}
+            y1={c1.y}
+            x2={c2.x}
+            y2={c2.y}
+            stroke={color}
+            strokeWidth="0.8"
+            strokeDasharray={strokeDash}
+            opacity="0.25"
+            className="hover:opacity-85 transition-opacity duration-200 cursor-pointer"
+          >
+            <title>{`${PLANET_GLYPHS[p1Key]?.name || p1Key} ${label} ${PLANET_GLYPHS[p2Key]?.name || p2Key} (${diff.toFixed(1)}°)`}</title>
+          </line>
+        );
+      }
+    }
+  }
+
+  // 4. Render planetary icons inside the wheel
+  const planetElements = [];
+  Object.entries(chart.planets).forEach(([key, planet]) => {
+    const coords = planetCoords[key];
+    if (!coords) return;
+    const glyph = PLANET_GLYPHS[key] || { symbol: '★', color: '#dfb73c', name: key };
+
+    planetElements.push(
+      <g key={`planet-node-${key}`}>
+        <motion.circle
+          whileHover={{ scale: 1.4 }}
+          cx={coords.x}
+          cy={coords.y}
+          r="7"
+          fill="rgba(10, 11, 22, 0.9)"
+          stroke={glyph.color}
+          strokeWidth="1.2"
+          className="cursor-pointer"
+        />
+        <text
+          x={coords.x}
+          y={coords.y + 2.5}
+          fill={glyph.color}
+          fontSize="7"
+          textAnchor="middle"
+          fontFamily="sans-serif"
+          className="pointer-events-none font-bold"
+        >
+          {glyph.symbol}
+        </text>
+        <title>{`${glyph.name}: ${planet.degree}° in ${planet.sign} (House ${planet.house})`}</title>
+      </g>
+    );
+  });
 
   // Outer Zodiac Ring labeling
   const zodiacLabels = [];
@@ -246,6 +318,9 @@ export default function AstroWheel({ chart }) {
 
           {/* Spokes and divisions */}
           {spokes}
+
+          {/* Astrological Aspect Lines */}
+          {aspectLines}
 
           {/* Planet SVG Elements */}
           {planetElements}
