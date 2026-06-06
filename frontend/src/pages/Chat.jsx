@@ -26,6 +26,52 @@ const PLANET_SYMBOLS = {
   south_node: '☋'
 };
 
+const ZODIAC_LIST = [
+  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 
+  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+];
+
+const ZODIAC_ELEMENTS = {
+  Aries: 'fire', Leo: 'fire', Sagittarius: 'fire',
+  Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth',
+  Gemini: 'air', Libra: 'air', Aquarius: 'air',
+  Cancer: 'water', Scorpio: 'water', Pisces: 'water'
+};
+
+const getCompatibilityScore = (sign1, sign2) => {
+  if (!sign1 || !sign2) return 50;
+  const el1 = ZODIAC_ELEMENTS[sign1];
+  const el2 = ZODIAC_ELEMENTS[sign2];
+  if (!el1 || !el2) return 50;
+  
+  if (el1 === el2) return 95; // Same element
+  
+  if ((el1 === 'fire' && el2 === 'air') || (el1 === 'air' && el2 === 'fire')) return 88;
+  if ((el1 === 'earth' && el2 === 'water') || (el1 === 'water' && el2 === 'earth')) return 85;
+  
+  if ((el1 === 'fire' && el2 === 'earth') || (el1 === 'earth' && el2 === 'fire')) return 60;
+  if ((el1 === 'air' && el2 === 'water') || (el1 === 'water' && el2 === 'air')) return 55;
+  
+  return 45;
+};
+
+const getCompatibilityText = (sign1, sign2) => {
+  const score = getCompatibilityScore(sign1, sign2);
+  const el1 = ZODIAC_ELEMENTS[sign1];
+  const el2 = ZODIAC_ELEMENTS[sign2];
+  
+  if (score >= 90) {
+    return `Both sharing the ${el1} element, this relationship is fueled by instant mutual understanding. You share similar energetic speeds and view life through a matching elemental lens.`;
+  }
+  if (score >= 80) {
+    return `The combination of ${el1} and ${el2} creates a highly productive union. ${el1 === 'fire' || el1 === 'air' ? 'Air feeds Fire, inspiring expansion and mutual inspiration.' : 'Water nourishes Earth, bringing emotional depth and grounded security.'}`;
+  }
+  if (score >= 55) {
+    return `A combination of ${el1} and ${el2} requires adjustments. While it offers unique perspectives, you may often feel like you speak different energetic languages. Growth is found in balancing your differences.`;
+  }
+  return `This is a highly karmic match with intense growth lessons. The clash between ${el1} and ${el2} can create steam or mud, demanding patient boundary work and conscious appreciation of your different modes of expression.`;
+};
+
 export default function Chat({ onBack }) {
   const { birthDetails, userId, messages, setMessages, clearChat, isLoading, setIsLoading } = useChatStore();
   const { sendMessageStream } = useStreaming();
@@ -33,6 +79,7 @@ export default function Chat({ onBack }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedPlanet, setSelectedPlanet] = useState(null);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [partnerSign, setPartnerSign] = useState('Aries');
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -107,21 +154,27 @@ export default function Chat({ onBack }) {
           <div className="flex bg-astro-indigo bg-opacity-40 p-1 rounded-xl border border-astro-cardBorder border-opacity-15 mb-4">
             <button
               onClick={() => setActiveTab('wheel')}
-              className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'wheel' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'wheel' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Wheel
             </button>
             <button
               onClick={() => setActiveTab('planets')}
-              className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'planets' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'planets' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Planets
             </button>
             <button
               onClick={() => setActiveTab('coords')}
-              className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'coords' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'coords' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Coords
+            </button>
+            <button
+              onClick={() => setActiveTab('compat')}
+              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'compat' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+            >
+              Match
             </button>
           </div>
 
@@ -205,6 +258,60 @@ export default function Chat({ onBack }) {
                     <div>Lat: {Number(birthDetails?.lat).toFixed(4)}°</div>
                     <div>Lon: {Number(birthDetails?.lon).toFixed(4)}°</div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* COMPATIBILITY TAB */}
+            {activeTab === 'compat' && (
+              <div className="space-y-4 animate-fade-in text-sans">
+                <h3 className="text-xs font-bold text-astro-gold uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-astro-gold" />
+                  <span>Synastry Match</span>
+                </h3>
+                
+                <div className="space-y-3 bg-astro-indigo bg-opacity-25 border border-astro-cardBorder border-opacity-15 p-4 rounded-xl">
+                  <div>
+                    <label className="block text-[8px] uppercase tracking-wider text-astro-textMuted font-mono mb-1">Your Sun Sign</label>
+                    <div className="text-xs font-semibold text-astro-textMain bg-[#0a0b16] bg-opacity-40 px-3 py-2 border border-astro-cardBorder border-opacity-15 rounded-lg capitalize">
+                      {formattedChart.sun || 'Unknown'}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-[8px] uppercase tracking-wider text-astro-textMuted font-mono mb-1">Partner's Sun Sign</label>
+                    <select
+                      value={partnerSign}
+                      onChange={(e) => setPartnerSign(e.target.value)}
+                      className="w-full text-xs font-semibold text-astro-gold bg-[#0a0b16] px-3 py-2 border border-astro-cardBorder border-opacity-30 rounded-lg focus:outline-none focus:border-astro-gold cursor-pointer"
+                    >
+                      {ZODIAC_LIST.map(sign => (
+                        <option key={sign} value={sign} className="bg-astro-bg text-astro-textMain">{sign}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {formattedChart.sun && (
+                    <div className="space-y-3 pt-2">
+                      <div className="flex justify-between items-center text-[10px] uppercase font-mono tracking-wider">
+                        <span className="text-astro-textMuted">Compatibility Score</span>
+                        <span className="text-astro-gold font-bold text-xs">{getCompatibilityScore(formattedChart.sun, partnerSign)}%</span>
+                      </div>
+                      
+                      <div className="h-1.5 w-full bg-[#0a0b16] rounded-full overflow-hidden border border-astro-cardBorder border-opacity-10">
+                        <motion.div 
+                          className="h-full bg-gradient-to-r from-astro-purple to-astro-gold"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${getCompatibilityScore(formattedChart.sun, partnerSign)}%` }}
+                          transition={{ duration: 0.5 }}
+                        />
+                      </div>
+                      
+                      <p className="text-[10px] text-astro-textMuted leading-relaxed bg-[#0a0b16] bg-opacity-45 p-3 rounded-lg border border-astro-cardBorder border-opacity-10 mt-2">
+                        {getCompatibilityText(formattedChart.sun, partnerSign)}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
