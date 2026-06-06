@@ -9,7 +9,7 @@ import ElementBalance from '../components/chat/ElementBalance';
 import AstroPrompts from '../components/chat/AstroPrompts';
 import { PLANET_DESCRIPTIONS, ZODIAC_DESCRIPTIONS } from '../services/astrologyInterpretations';
 import { playMessageChime, getDominantElement, startAmbientDrone, stopAmbientDrone } from '../services/soundEffects';
-import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout } from 'lucide-react';
+import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout, Printer } from 'lucide-react';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -32,6 +32,7 @@ export default function Chat({ onBack }) {
   const [activeTab, setActiveTab] = useState('wheel'); // 'wheel' | 'planets' | 'coords'
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedPlanet, setSelectedPlanet] = useState(null);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -228,10 +229,19 @@ export default function Chat({ onBack }) {
           </div>
         </div>
 
+        {/* Export Profile button */}
+        <button
+          onClick={() => setShowExportModal(true)}
+          className="flex items-center justify-center gap-2 py-2.5 border border-astro-gold border-opacity-35 text-astro-gold hover:bg-astro-indigo hover:bg-opacity-40 rounded-xl transition duration-200 text-xs font-semibold cursor-pointer mb-2 print:hidden"
+        >
+          <Printer className="h-4 w-4" />
+          <span>Export Astro Profile</span>
+        </button>
+
         {/* Clear chat button */}
         <button
           onClick={handleClearChat}
-          className="flex items-center justify-center gap-2 py-2.5 border border-red-500 border-opacity-20 text-red-400 hover:bg-red-950 hover:bg-opacity-20 rounded-xl transition duration-200 text-xs font-semibold cursor-pointer"
+          className="flex items-center justify-center gap-2 py-2.5 border border-red-500 border-opacity-20 text-red-400 hover:bg-red-950 hover:bg-opacity-20 rounded-xl transition duration-200 text-xs font-semibold cursor-pointer print:hidden"
         >
           <Trash2 className="h-4 w-4" />
           <span>Clear Consultation</span>
@@ -311,6 +321,102 @@ export default function Chat({ onBack }) {
                 <span className="text-astro-gold font-bold uppercase block mb-1">Celestial Synthesis</span>
                 Your {selectedPlanet.name} qualities are expressed in a {selectedPlanet.sign.toLowerCase()} manner within your {selectedPlanet.house}th house of life experiences.
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Export Profile Modal */}
+      {showExportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm print:relative print:bg-white print:p-0 print:z-0">
+          <div className="bg-astro-card border border-astro-cardBorder rounded-2xl max-w-xl w-full p-6 shadow-glow relative overflow-hidden animate-fade-in text-sans print:border-none print:shadow-none print:bg-white print:text-black print:p-0 print:max-w-none print:w-full">
+            <div className="absolute top-0 right-0 h-24 w-24 bg-astro-gold opacity-5 blur-3xl rounded-full print:hidden"></div>
+            
+            {/* Modal Header */}
+            <div className="flex justify-between items-center mb-4 border-b border-astro-cardBorder border-opacity-20 pb-3 print:border-black print:pb-2">
+              <div>
+                <h3 className="text-base font-bold text-astro-textMain print:text-black font-sans">Cosmic Birth Alignment Report</h3>
+                <p className="text-[10px] text-astro-textMuted uppercase tracking-wider font-mono print:text-gray-600">AstroAgent Precision Ephemeris v1.0</p>
+              </div>
+              <button 
+                onClick={() => setShowExportModal(false)}
+                className="text-astro-textMuted hover:text-astro-gold transition-colors text-sm font-semibold cursor-pointer print:hidden"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="space-y-4 text-xs text-astro-textMain print:text-black overflow-y-auto max-h-[60vh] pr-1 print:max-h-none print:overflow-visible print:pr-0">
+              {/* Profile Details Grid */}
+              <div className="grid grid-cols-2 gap-3 bg-astro-indigo bg-opacity-35 p-3 rounded-xl border border-astro-cardBorder border-opacity-10 print:bg-gray-100 print:border-gray-300 print:text-black">
+                <div>
+                  <span className="text-[8px] uppercase tracking-wider text-astro-textMuted font-mono print:text-gray-600 block">Consultant Name</span>
+                  <span className="font-bold">AstroAgent seeker</span>
+                </div>
+                <div>
+                  <span className="text-[8px] uppercase tracking-wider text-astro-textMuted font-mono print:text-gray-600 block">Birth Date & Time</span>
+                  <span className="font-bold">{birthDetails?.dob} @ {birthDetails?.time}</span>
+                </div>
+                <div>
+                  <span className="text-[8px] uppercase tracking-wider text-astro-textMuted font-mono print:text-gray-600 block">Birth Place</span>
+                  <span className="font-bold truncate block">{birthDetails?.place}</span>
+                </div>
+                <div>
+                  <span className="text-[8px] uppercase tracking-wider text-astro-textMuted font-mono print:text-gray-600 block">Coordinates & TZ</span>
+                  <span className="font-bold font-mono text-[9px]">{Number(birthDetails?.lat).toFixed(4)}°N, {Number(birthDetails?.lon).toFixed(4)}°E ({birthDetails?.timezone})</span>
+                </div>
+              </div>
+
+              {/* Signs Summary */}
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-2 bg-astro-indigo bg-opacity-25 border border-astro-cardBorder border-opacity-10 rounded-xl print:border-gray-300 print:bg-gray-50">
+                  <div className="text-astro-textMuted text-[8px] uppercase font-mono print:text-gray-600">Ascendant</div>
+                  <div className="font-bold text-astro-gold mt-0.5 print:text-black">{formattedChart.ascendant || 'Unknown'}</div>
+                </div>
+                <div className="p-2 bg-astro-indigo bg-opacity-25 border border-astro-cardBorder border-opacity-10 rounded-xl print:border-gray-300 print:bg-gray-50">
+                  <div className="text-astro-textMuted text-[8px] uppercase font-mono print:text-gray-600">Sun Sign</div>
+                  <div className="font-bold text-astro-gold mt-0.5 print:text-black">{formattedChart.sun || 'Unknown'}</div>
+                </div>
+                <div className="p-2 bg-astro-indigo bg-opacity-25 border border-astro-cardBorder border-opacity-10 rounded-xl print:border-gray-300 print:bg-gray-50">
+                  <div className="text-astro-textMuted text-[8px] uppercase font-mono print:text-gray-600">Moon Sign</div>
+                  <div className="font-bold text-astro-gold mt-0.5 print:text-black">{formattedChart.moon || 'Unknown'}</div>
+                </div>
+              </div>
+
+              {/* Alignments List */}
+              <div className="space-y-2">
+                <span className="text-[9px] uppercase tracking-wider text-astro-gold font-bold font-mono print:text-black block border-b border-astro-cardBorder border-opacity-10 pb-1 print:border-gray-300">Planetary Coordinates</span>
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  {Object.entries(planets).map(([key, planet]) => (
+                    <div key={key} className="flex justify-between border-b border-astro-cardBorder border-opacity-5 py-1 font-mono print:border-gray-200 print:text-black">
+                      <span className="capitalize text-astro-textMain font-sans print:text-black font-medium">{key.replace('_', ' ')}:</span>
+                      <span className="text-astro-textMuted print:text-gray-700">{planet.degree}° {planet.sign} (H{planet.house})</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Certification note */}
+              <div className="text-[8px] text-astro-textMuted italic font-mono mt-4 text-center border-t border-astro-cardBorder border-opacity-10 pt-3 print:text-black print:border-gray-300">
+                Calculated dynamically via AstroAgent Astronomy Systems. Ephemeris time verified.
+              </div>
+            </div>
+
+            {/* Print Action button */}
+            <div className="mt-5 flex gap-3 print:hidden">
+              <button
+                onClick={() => setShowExportModal(false)}
+                className="flex-1 py-2 border border-astro-cardBorder border-opacity-35 text-astro-textMuted rounded-xl text-xs font-semibold cursor-pointer hover:bg-astro-indigo hover:bg-opacity-35 transition"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="flex-1 py-2 bg-gradient-to-r from-astro-gold to-[#fbe087] text-astro-bg rounded-xl text-xs font-bold shadow-goldGlow cursor-pointer hover:scale-[1.01] transition"
+              >
+                Print / Save PDF
+              </button>
             </div>
           </div>
         </div>
