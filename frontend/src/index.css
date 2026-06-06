@@ -88,6 +88,51 @@
   }
 }
 
+/* Star layers for parallax and depth */
+.stars-layer-1 {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 1.5px; height: 1.5px;
+  background: transparent;
+  box-shadow: 10vw 20vh #fff, 30vw 40vh #fff, 50vw 15vh #fff, 70vw 60vh #fff, 90vw 25vh #fff, 15vw 80vh #fff, 85vw 75vh #fff, 40vw 90vh #fff, 65vw 35vh #fff, 20vw 10vh #fff, 45vw 50vh #fff, 75vw 20vh #fff, 5vw 95vh #fff;
+  animation: starTwinkle1 6s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+.stars-layer-2 {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 2.5px; height: 2.5px;
+  background: transparent;
+  box-shadow: 12vw 25vh rgba(255,255,255,0.8), 32vw 45vh rgba(255,255,255,0.8), 52vw 20vh rgba(255,255,255,0.8), 72vw 65vh rgba(255,255,255,0.8), 92vw 30vh rgba(255,255,255,0.8), 17vw 85vh rgba(255,255,255,0.8), 87vw 80vh rgba(255,255,255,0.8), 42vw 95vh rgba(255,255,255,0.8), 60vw 10vh rgba(255,255,255,0.8), 8vw 55vh rgba(255,255,255,0.8);
+  animation: starTwinkle2 9s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+.stars-layer-3 {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 3.5px; height: 3.5px;
+  background: transparent;
+  box-shadow: 15vw 30vh rgba(223, 183, 60, 0.7), 35vw 50vh rgba(125, 82, 255, 0.7), 55vw 25vh rgba(223, 183, 60, 0.7), 75vw 70vh rgba(125, 82, 255, 0.7), 95vw 35vh rgba(223, 183, 60, 0.7), 2vw 15vh rgba(125, 82, 255, 0.7), 80vw 90vh rgba(223, 183, 60, 0.7);
+  animation: starTwinkle3 12s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes starTwinkle1 {
+  0% { opacity: 0.2; transform: translateY(0); }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; transform: translateY(-8px); }
+}
+@keyframes starTwinkle2 {
+  0% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.4; transform: translateY(-15px); }
+}
+@keyframes starTwinkle3 {
+  0% { opacity: 0.4; transform: translateY(0); }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.3; transform: translateY(-22px); }
+}
+
 @keyframes twinkle {
   0%, 100% { opacity: 0.3; transform: scale(0.95); }
   50% { opacity: 0.9; transform: scale(1.05); }

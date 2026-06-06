@@ -42,7 +42,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-astro-bg text-astro-textMain bg-cosmos-gradient flex flex-col font-sans">
+    <div className="min-h-screen bg-astro-bg text-astro-textMain bg-cosmos-gradient flex flex-col font-sans relative overflow-hidden">
+      {/* Parallax Starry Background Layers */}
+      <div className="stars-layer-1"></div>
+      <div className="stars-layer-2"></div>
+      <div className="stars-layer-3"></div>
       
       {/* Top Navigation Header */}
       <header className="px-6 py-4 border-b border-astro-cardBorder border-opacity-25 flex items-center justify-between backdrop-blur-md bg-astro-bg bg-opacity-80 sticky top-0 z-50">
