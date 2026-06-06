@@ -78,6 +78,45 @@ export default function AstroWheel({ chart }) {
   const cy = 120;
   
   const [hoveredHouse, setHoveredHouse] = useState(null);
+  const [showTransits, setShowTransits] = useState(false);
+
+  const getTransitPositions = () => {
+    const transits = {};
+    const shifts = {
+      sun: 120,
+      moon: 280,
+      mercury: 95,
+      venus: 45,
+      mars: 190,
+      jupiter: 30,
+      saturn: 12,
+      uranus: 4,
+      neptune: 2,
+      pluto: 1,
+      north_node: -18,
+      south_node: -18
+    };
+    
+    Object.entries(chart.planets).forEach(([key, planet]) => {
+      const shift = shifts[key] || 0;
+      const natalLon = SIGN_ORDER[planet.sign] * 30 + planet.degree;
+      const transitLon = (natalLon + shift) % 360;
+      
+      const signIdx = Math.floor(transitLon / 30);
+      const degree = Math.round(transitLon % 30);
+      const signName = ZODIAC_SIGNS[signIdx].name;
+      
+      const house = ((Math.floor(transitLon / 30) + 12 - Math.floor(natalLon / 30) + planet.house - 1) % 12) + 1;
+      
+      transits[key] = {
+        degree,
+        sign: signName,
+        house,
+        name: planet.name
+      };
+    });
+    return transits;
+  };
 
   const getCoordinates = (angleDeg, r) => {
     // 180 deg puts the Ascendant at the left (9 o'clock), standard in astrology
@@ -147,14 +186,41 @@ export default function AstroWheel({ chart }) {
       const startAngle = (houseNum - 1) * 30;
       const midAngle = startAngle + 15;
       
-      let r = 68;
+      let r = showTransits ? 54 : 68;
       if (numPlanets > 1) {
-        const minR = 45;
-        const maxR = 82;
+        const minR = showTransits ? 42 : 45;
+        const maxR = showTransits ? 66 : 82;
         r = minR + (index / (numPlanets - 1)) * (maxR - minR);
       }
       planetCoords[planet.key] = getCoordinates(midAngle, r);
     });
+  }
+
+  // Precompute transit coords if showTransits is true
+  const transitCoords = {};
+  const transitPositions = showTransits ? getTransitPositions() : {};
+  if (showTransits) {
+    const transitHousePlanets = {};
+    for (let i = 1; i <= 12; i++) transitHousePlanets[i] = [];
+    Object.entries(transitPositions).forEach(([key, planet]) => {
+      transitHousePlanets[planet.house].push({ key, ...planet });
+    });
+
+    for (let houseNum = 1; houseNum <= 12; houseNum++) {
+      const planetsInHouse = transitHousePlanets[houseNum];
+      const numPlanets = planetsInHouse.length;
+      planetsInHouse.forEach((planet, index) => {
+        const startAngle = (houseNum - 1) * 30;
+        const midAngle = startAngle + 15;
+        let r = 80;
+        if (numPlanets > 1) {
+          const minR = 72;
+          const maxR = 88;
+          r = minR + (index / (numPlanets - 1)) * (maxR - minR);
+        }
+        transitCoords[planet.key] = getCoordinates(midAngle, r);
+      });
+    }
   }
 
   // 3. Render aspect lines between planets
@@ -251,10 +317,58 @@ export default function AstroWheel({ chart }) {
         >
           {glyph.symbol}
         </text>
-        <title>{`${glyph.name}: ${planet.degree}° in ${planet.sign} (House ${planet.house})`}</title>
+        <title>{`NATAL ${glyph.name}: ${planet.degree}° in ${planet.sign} (House ${planet.house})`}</title>
       </g>
     );
   });
+
+  // Render transit planets
+  if (showTransits) {
+    Object.entries(transitPositions).forEach(([key, planet]) => {
+      const coords = transitCoords[key];
+      if (!coords) return;
+      const glyph = PLANET_GLYPHS[key] || { symbol: '★', name: key };
+      const transitColor = '#64b5f6';
+
+      planetElements.push(
+        <g key={`transit-node-${key}`}>
+          {planetCoords[key] && (
+            <line
+              x1={planetCoords[key].x}
+              y1={planetCoords[key].y}
+              x2={coords.x}
+              y2={coords.y}
+              stroke="rgba(100, 181, 246, 0.2)"
+              strokeWidth="0.6"
+              strokeDasharray="1 1"
+            />
+          )}
+          <motion.circle
+            whileHover={{ scale: 1.4 }}
+            cx={coords.x}
+            cy={coords.y}
+            r="6"
+            fill="rgba(10, 11, 22, 0.95)"
+            stroke={transitColor}
+            strokeWidth="1"
+            className="cursor-pointer"
+          />
+          <text
+            x={coords.x}
+            y={coords.y + 2}
+            fill={transitColor}
+            fontSize="6"
+            textAnchor="middle"
+            fontFamily="sans-serif"
+            className="pointer-events-none font-bold"
+          >
+            {glyph.symbol}
+          </text>
+          <title>{`TRANSIT ${glyph.name}: ${planet.degree}° in ${planet.sign} (House ${planet.house})`}</title>
+        </g>
+      );
+    });
+  }
 
   // Outer Zodiac Ring labeling
   const zodiacLabels = [];
@@ -286,7 +400,20 @@ export default function AstroWheel({ chart }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center bg-astro-indigo bg-opacity-25 border border-astro-cardBorder border-opacity-30 rounded-2xl p-4 shadow-glow">
+    <div className="flex flex-col items-center justify-center bg-astro-indigo bg-opacity-25 border border-astro-cardBorder border-opacity-30 rounded-2xl p-4 shadow-glow w-full">
+      <div className="flex justify-between items-center w-full mb-3 px-1">
+        <span className="text-[10px] font-bold text-astro-gold uppercase tracking-wider font-mono">Natal Chart</span>
+        <button
+          onClick={() => setShowTransits(!showTransits)}
+          className={`px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase border cursor-pointer transition-all duration-300 ${
+            showTransits 
+              ? 'bg-astro-purple text-white border-astro-purple border-opacity-50' 
+              : 'bg-transparent text-astro-textMuted border-astro-cardBorder border-opacity-30 hover:border-opacity-65 hover:text-astro-gold'
+          }`}
+        >
+          {showTransits ? 'Transits ON' : 'Show Transits'}
+        </button>
+      </div>
       <div className="relative w-64 h-64">
         <svg className="w-full h-full" viewBox="0 0 240 240">
           <defs>
