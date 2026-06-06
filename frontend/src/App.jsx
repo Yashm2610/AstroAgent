@@ -5,6 +5,7 @@ import BirthForm from './components/forms/BirthForm';
 import Chat from './pages/Chat';
 import { Moon, Sparkles, Volume2, VolumeX } from 'lucide-react';
 import { toggleMuteStatus, getMuteStatus } from './services/soundEffects';
+import MouseTrail from './components/chat/MouseTrail';
 
 export default function App() {
   const { birthDetails, setBirthDetails, theme, setTheme } = useChatStore();
@@ -47,6 +48,9 @@ export default function App() {
       <div className="stars-layer-1"></div>
       <div className="stars-layer-2"></div>
       <div className="stars-layer-3"></div>
+      
+      {/* Mouse cursor particle trail */}
+      <MouseTrail />
       
       {/* Top Navigation Header */}
       <header className="px-6 py-4 border-b border-astro-cardBorder border-opacity-25 flex items-center justify-between backdrop-blur-md bg-astro-bg bg-opacity-80 sticky top-0 z-50">
