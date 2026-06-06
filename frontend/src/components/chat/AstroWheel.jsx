@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const PLANET_GLYPHS = {
@@ -31,6 +31,21 @@ const ZODIAC_SIGNS = [
   { name: 'Pisces', symbol: '♓', element: 'water' }
 ];
 
+const HOUSE_INFO = {
+  1: { title: "1st House (Ascendant)", desc: "Self, identity, appearance, new beginnings, vitality." },
+  2: { title: "2nd House", desc: "Values, personal finances, self-worth, material wealth." },
+  3: { title: "3rd House", desc: "Mind, communication, immediate environment, siblings." },
+  4: { title: "4th House (Nadir)", desc: "Home, family, foundations, ancestry, private self." },
+  5: { title: "5th House", desc: "Creativity, romance, pleasure, play, self-expression." },
+  6: { title: "6th House", desc: "Health, work environment, service, daily routines." },
+  7: { title: "7th House (Descendant)", desc: "Partnerships, marriage, collaborations, open relations." },
+  8: { title: "8th House", desc: "Transformation, shared resources, intimacy, rebirth." },
+  9: { title: "9th House", desc: "Philosophy, belief systems, higher learning, travel." },
+  10: { title: "10th House (Midheaven)", desc: "Career, public reputation, ambitions, life calling." },
+  11: { title: "11th House", desc: "Friendships, community groups, future goals, networks." },
+  12: { title: "12th House", desc: "Subconscious, spiritual growth, secrets, solitude." }
+};
+
 export default function AstroWheel({ chart }) {
   if (!chart || !chart.planets) {
     return (
@@ -56,6 +71,8 @@ export default function AstroWheel({ chart }) {
   // Calculate coordinates (center = 120, 120; radius = 100)
   const cx = 120;
   const cy = 120;
+  
+  const [hoveredHouse, setHoveredHouse] = useState(null);
 
   const getCoordinates = (angleDeg, r) => {
     // 180 deg puts the Ascendant at the left (9 o'clock), standard in astrology
@@ -65,6 +82,36 @@ export default function AstroWheel({ chart }) {
       y: cy + r * Math.sin(angleRad),
     };
   };
+
+  const getAnnularSectorPath = (startAngle, endAngle, rIn, rOut) => {
+    const pIn1 = getCoordinates(startAngle, rIn);
+    const pOut1 = getCoordinates(startAngle, rOut);
+    const pOut2 = getCoordinates(endAngle, rOut);
+    const pIn2 = getCoordinates(endAngle, rIn);
+    
+    return `M ${pIn1.x} ${pIn1.y} L ${pOut1.x} ${pOut1.y} A ${rOut} ${rOut} 0 0 1 ${pOut2.x} ${pOut2.y} L ${pIn2.x} ${pIn2.y} A ${rIn} ${rIn} 0 0 0 ${pIn1.x} ${pIn1.y} Z`;
+  };
+
+  // Render house sectors
+  const houseSectors = [];
+  for (let h = 1; h <= 12; h++) {
+    const startAngle = (h - 1) * 30;
+    const endAngle = h * 30;
+    const pathData = getAnnularSectorPath(startAngle, endAngle, 35, 98);
+    
+    houseSectors.push(
+      <path
+        key={`house-sector-${h}`}
+        d={pathData}
+        fill={hoveredHouse === h ? "rgba(223, 183, 60, 0.08)" : "transparent"}
+        stroke="rgba(212, 175, 55, 0.03)"
+        strokeWidth="0.5"
+        className="cursor-pointer transition-all duration-200"
+        onMouseEnter={() => setHoveredHouse(h)}
+        onMouseLeave={() => setHoveredHouse(null)}
+      />
+    );
+  }
 
   // Render the spokes dividing the houses (12 houses)
   const spokes = [];
@@ -194,6 +241,9 @@ export default function AstroWheel({ chart }) {
             fill="#dfb73c"
           />
 
+          {/* House Sectors */}
+          {houseSectors}
+
           {/* Spokes and divisions */}
           {spokes}
 
@@ -207,8 +257,23 @@ export default function AstroWheel({ chart }) {
           <circle cx={cx} cy={cy} r="115" fill="none" stroke="rgba(125, 82, 255, 0.3)" strokeWidth="0.5" className="star-twinkle-slow" />
         </svg>
       </div>
-      <div className="text-[10px] text-astro-textMuted font-mono mt-2 text-center uppercase tracking-widest flex items-center gap-1.5 justify-center">
-        <span>Ascendant at Left horizon</span>
+
+      {/* House info tooltip display */}
+      <div className="w-full min-h-[46px] mt-3 px-3 py-2 bg-astro-bg bg-opacity-50 border border-astro-cardBorder border-opacity-20 rounded-xl flex flex-col justify-center transition-all duration-300">
+        {hoveredHouse ? (
+          <div className="animate-fade-in text-left">
+            <div className="text-[9px] font-bold text-astro-gold uppercase tracking-wider font-mono">
+              {HOUSE_INFO[hoveredHouse].title}
+            </div>
+            <div className="text-[8.5px] text-astro-textMuted leading-tight font-sans mt-0.5">
+              {HOUSE_INFO[hoveredHouse].desc}
+            </div>
+          </div>
+        ) : (
+          <div className="text-[9px] text-astro-textMuted font-mono uppercase tracking-widest text-center">
+            Hover houses for alignments
+          </div>
+        )}
       </div>
     </div>
   );
