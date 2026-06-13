@@ -93,7 +93,7 @@ export default function BirthForm({ onSuccess }) {
       </div>
 
       {/* Progress completeness gauge */}
-      <div className="mb-6 bg-astro-indigo bg-opacity-40 p-3.5 rounded-xl border border-astro-cardBorder border-opacity-10">
+      <div className={`mb-6 bg-astro-indigo bg-opacity-40 p-3.5 rounded-xl border transition-all duration-500 ${progressPercent === 100 ? 'border-astro-gold shadow-[0_0_15px_rgba(223,183,60,0.15)]' : 'border-astro-cardBorder border-opacity-10'}`}>
         <div className="flex justify-between items-center text-[10px] uppercase font-mono tracking-wider mb-1.5">
           <span className="text-astro-textMuted">Profile Completeness</span>
           <span className="text-astro-gold font-bold">{progressPercent}%</span>
@@ -107,9 +107,9 @@ export default function BirthForm({ onSuccess }) {
           />
         </div>
         <div className="mt-2 text-[9px] text-astro-textMuted font-mono flex justify-between">
-          <span className={dob ? "text-green-400 font-semibold" : "text-astro-textMuted"}>{dob ? "✓ Date" : "○ Date"}</span>
-          <span className={time ? "text-green-400 font-semibold" : "text-astro-textMuted"}>{time ? "✓ Time" : "○ Time"}</span>
-          <span className={place ? "text-green-400 font-semibold" : "text-astro-textMuted"}>{place ? "✓ Place" : "○ Place"}</span>
+          <span className={dob ? "text-green-400 font-semibold drop-shadow-[0_0_4px_rgba(74,222,128,0.4)]" : "text-astro-textMuted"}>{dob ? "✓ Date" : "○ Date"}</span>
+          <span className={time ? "text-green-400 font-semibold drop-shadow-[0_0_4px_rgba(74,222,128,0.4)]" : "text-astro-textMuted"}>{time ? "✓ Time" : "○ Time"}</span>
+          <span className={place ? "text-green-400 font-semibold drop-shadow-[0_0_4px_rgba(74,222,128,0.4)]" : "text-astro-textMuted"}>{place ? "✓ Place" : "○ Place"}</span>
         </div>
       </div>
 
