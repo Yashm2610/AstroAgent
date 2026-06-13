@@ -28,6 +28,12 @@
       radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 2px),
       radial-gradient(white, rgba(255, 255, 255, 0.05) 1px, transparent 3px);
   }
+  body.theme-aurora {
+    background-image: 
+      radial-gradient(circle at 50% 0%, #052e16 0%, #020617 75%),
+      radial-gradient(white, rgba(255, 255, 255, 0.18) 1px, transparent 2px),
+      radial-gradient(white, rgba(255, 255, 255, 0.06) 1px, transparent 3px);
+  }
 }
 
 /* Custom micro-animations and gradients */

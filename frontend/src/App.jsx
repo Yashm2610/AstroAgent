@@ -75,6 +75,7 @@ export default function App() {
               <option value="indigo" className="bg-[#0a0b16] text-[#dfb73c]">Indigo</option>
               <option value="nebula" className="bg-[#080312] text-[#dfb73c]">Nebula</option>
               <option value="silver" className="bg-[#06080e] text-[#dfb73c]">Silver</option>
+              <option value="aurora" className="bg-[#022c22] text-[#dfb73c]">Aurora</option>
             </select>
           </div>
 
