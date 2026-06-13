@@ -4,6 +4,7 @@ import { useChatStore } from '../../store/chatStore';
 
 export default function ChatInput({ onSend }) {
   const [text, setText] = useState('');
+  const [focused, setFocused] = useState(false);
   const { isLoading } = useChatStore();
   const inputRef = useRef(null);
 
@@ -22,13 +23,15 @@ export default function ChatInput({ onSend }) {
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <div className="relative flex items-center bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-70 rounded-2xl p-2 shadow-glow">
+      <div className={`relative flex items-center bg-astro-indigo bg-opacity-40 border rounded-2xl p-2 transition-all duration-300 ${focused ? 'border-astro-gold shadow-[0_0_20px_rgba(223,183,60,0.25)]' : 'border-astro-cardBorder border-opacity-70 shadow-glow'}`}>
         <input
           ref={inputRef}
           type="text"
           placeholder={isLoading ? "AstroAgent is reading the stars..." : "Ask about your career, daily transits, or chart placements..."}
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           disabled={isLoading}
           className="flex-1 bg-transparent px-4 py-2 text-sm text-astro-textMain placeholder-astro-textMuted placeholder-opacity-50 focus:outline-none disabled:cursor-not-allowed font-sans"
         />
