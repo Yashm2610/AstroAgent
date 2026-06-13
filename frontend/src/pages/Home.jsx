@@ -7,7 +7,10 @@ const COSMIC_QUOTES = [
   { text: "The stars in heaven sing a music if only we had ears to hear it.", author: "Pythagoras" },
   { text: "Millionaires don't use Astrology, billionaires do.", author: "J.P. Morgan" },
   { text: "We are born at a given moment, in a given place and, like vintage years of wine, we have the qualities of the year and of the season in which we are born.", author: "Carl Jung" },
-  { text: "The cosmos is within us. We are made of star-stuff. We are a way for the universe to know itself.", author: "Carl Sagan" }
+  { text: "The cosmos is within us. We are made of star-stuff. We are a way for the universe to know itself.", author: "Carl Sagan" },
+  { text: "Astrology is a language. If you understand this language, the sky speaks to you.", author: "Dane Rudhyar" },
+  { text: "The sky is the ultimate art gallery just above us.", author: "Ralph Waldo Emerson" },
+  { text: "The celestial bodies are cause of all that takes place in the sublunary world.", author: "Thomas Aquinas" }
 ];
 
 export default function Home({ onStart }) {
@@ -28,7 +31,7 @@ export default function Home({ onStart }) {
 
       {/* Floating Constellation Lines / SVG (pure decorative) */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <svg className="w-full h-full rotate-slow" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg className="w-full h-full rotate-slow" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ animationDuration: '70s' }}>
           <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(212, 175, 55, 0.08)" strokeWidth="0.2" strokeDasharray="1 3" />
           <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(125, 82, 255, 0.05)" strokeWidth="0.2" />
           <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(212, 175, 55, 0.05)" strokeWidth="0.15" strokeDasharray="5 5" />
@@ -46,6 +49,14 @@ export default function Home({ onStart }) {
         {/* Cosmos emblem */}
         <motion.div 
           whileHover={{ scale: 1.05 }}
+          animate={{ 
+            boxShadow: [
+              "0 0 8px rgba(223, 183, 60, 0.15)",
+              "0 0 18px rgba(223, 183, 60, 0.45)",
+              "0 0 8px rgba(223, 183, 60, 0.15)"
+            ]
+          }}
+          transition={{ repeat: Infinity, duration: 4 }}
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-40 text-xs text-astro-gold shadow-glow cursor-pointer"
         >
           <Stars className="h-3.5 w-3.5 text-astro-gold star-twinkle-fast" />
