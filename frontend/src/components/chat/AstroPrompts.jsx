@@ -4,11 +4,15 @@ import { Compass, Briefcase, Moon, AlertTriangle, Heart } from 'lucide-react';
 const PROMPTS = [
   { text: "What does my Sun sign reveal about my core purpose?", icon: <Compass className="h-3 w-3 text-astro-gold" />, category: "identity" },
   { text: "How can I balance my Sun and Moon sign energies?", icon: <Compass className="h-3 w-3 text-astro-gold" />, category: "identity" },
+  { text: "How does my rising sign (Ascendant) shape my outer personality?", icon: <Compass className="h-3 w-3 text-astro-gold" />, category: "identity" },
   { text: "What lessons does Saturn indicate in my chart?", icon: <AlertTriangle className="h-3 w-3 text-astro-purple" />, category: "lessons" },
   { text: "Explain the spiritual meaning of any retrograde planets in my chart.", icon: <AlertTriangle className="h-3 w-3 text-astro-purple" />, category: "lessons" },
+  { text: "Identify key karmic lessons associated with my South Node placement.", icon: <AlertTriangle className="h-3 w-3 text-astro-purple" />, category: "lessons" },
   { text: "Analyze my career path using my 10th house placement.", icon: <Briefcase className="h-3 w-3 text-blue-400" />, category: "career" },
   { text: "What planetary placements govern my wealth and assets?", icon: <Briefcase className="h-3 w-3 text-blue-400" />, category: "career" },
+  { text: "Which astrological configurations point to my unique talents and vocation?", icon: <Briefcase className="h-3 w-3 text-blue-400" />, category: "career" },
   { text: "What does my 7th house placement suggest about partnerships?", icon: <Heart className="h-3 w-3 text-red-400" />, category: "love" },
+  { text: "What sign placement in my chart highlights how I express affection and receive love?", icon: <Heart className="h-3 w-3 text-red-400" />, category: "love" },
   { text: "Are there any major transits affecting my Moon sign today?", icon: <Moon className="h-3 w-3 text-green-400" />, category: "identity" }
 ];
 
@@ -59,7 +63,7 @@ export default function AstroPrompts({ onSelect, disabled }) {
             type="button"
             disabled={disabled}
             onClick={() => onSelect(prompt.text)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-astro-indigo bg-opacity-30 hover:bg-opacity-50 border border-astro-cardBorder border-opacity-20 hover:border-opacity-40 rounded-xl text-xs text-astro-textMain transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-astro-indigo bg-opacity-30 hover:bg-opacity-50 border border-astro-cardBorder border-opacity-20 hover:border-opacity-40 rounded-xl text-xs text-astro-textMain transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 hover:scale-[1.02] hover:shadow-glow"
           >
             {prompt.icon}
             <span className="font-sans font-medium text-left">{prompt.text}</span>
