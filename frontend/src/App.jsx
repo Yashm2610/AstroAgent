@@ -4,13 +4,15 @@ import Home from './pages/Home';
 import BirthForm from './components/forms/BirthForm';
 import Chat from './pages/Chat';
 import { Moon, Sparkles, Volume2, VolumeX } from 'lucide-react';
-import { toggleMuteStatus, getMuteStatus, startAmbientDrone, stopAmbientDrone, getDominantElement } from './services/soundEffects';
+import { toggleMuteStatus, getMuteStatus, startAmbientDrone, stopAmbientDrone, getDominantElement, getSoundVolume, getSoundTrack, setSoundVolume, setSoundTrack } from './services/soundEffects';
 import MouseTrail from './components/chat/MouseTrail';
 
 export default function App() {
   const { birthDetails, setBirthDetails, theme, setTheme, fontPairing, setFontPairing } = useChatStore();
   const [view, setView] = useState('home'); // 'home' | 'birth-form' | 'chat'
   const [muted, setMuted] = useState(getMuteStatus());
+  const [volumeVal, setVolumeVal] = useState(getSoundVolume());
+  const [trackVal, setTrackVal] = useState(getSoundTrack());
 
   // Apply theme and font class to body
   useEffect(() => {
@@ -111,6 +113,40 @@ export default function App() {
           >
             {muted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
           </button>
+
+          {/* Volume Slider & Track Selector */}
+          {!muted && (
+            <div className="flex items-center gap-2 bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 px-2 py-1 rounded-full text-[10px] font-mono">
+              <span className="text-astro-textMuted uppercase">Track:</span>
+              <select
+                value={trackVal}
+                onChange={(e) => {
+                  setSoundTrack(e.target.value);
+                  setTrackVal(e.target.value);
+                }}
+                className="bg-transparent text-astro-gold font-bold focus:outline-none cursor-pointer uppercase text-[10px] border-none outline-none"
+              >
+                <option value="element" className="bg-[#0a0b16] text-[#dfb73c]">Element</option>
+                <option value="cosmic" className="bg-[#0a0b16] text-[#dfb73c]">Cosmic</option>
+                <option value="solfeggio" className="bg-[#0a0b16] text-[#dfb73c]">528Hz</option>
+                <option value="theta" className="bg-[#0a0b16] text-[#dfb73c]">Theta</option>
+              </select>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={volumeVal}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  setSoundVolume(val);
+                  setVolumeVal(val);
+                }}
+                className="w-12 h-1 bg-astro-cardBorder rounded-lg appearance-none cursor-pointer accent-astro-gold"
+                title="Volume"
+              />
+            </div>
+          )}
 
           <span className="text-xs text-astro-textMuted font-mono bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 px-3 py-1 rounded-full flex items-center gap-1.5">
             <Sparkles className="h-3 w-3 text-astro-gold" />
