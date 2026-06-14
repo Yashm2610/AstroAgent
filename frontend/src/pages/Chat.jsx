@@ -18,6 +18,7 @@ import AspectGrid from '../components/chat/AspectGrid';
 import MoonPhase from '../components/chat/MoonPhase';
 import SouthIndianChart from '../components/chat/SouthIndianChart';
 import CoordinatesHUD from '../components/chat/CoordinatesHUD';
+import Glossary from '../components/chat/Glossary';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -293,6 +294,7 @@ export default function Chat({ onBack }) {
                   </div>
                 </div>
                 <CoordinatesHUD chart={formattedChart} />
+                <Glossary />
               </div>
             )}
 
