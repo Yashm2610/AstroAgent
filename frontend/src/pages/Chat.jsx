@@ -16,6 +16,7 @@ import PlanetaryDignities from '../components/chat/PlanetaryDignities';
 import AstroJournal from '../components/chat/AstroJournal';
 import AspectGrid from '../components/chat/AspectGrid';
 import MoonPhase from '../components/chat/MoonPhase';
+import SouthIndianChart from '../components/chat/SouthIndianChart';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -87,6 +88,7 @@ export default function Chat({ onBack }) {
   const [showExportModal, setShowExportModal] = useState(false);
   const [partnerSign, setPartnerSign] = useState('Aries');
   const [oracleOpen, setOracleOpen] = useState(false);
+  const [chartStyle, setChartStyle] = useState('circular'); // 'circular' | 'south'
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -195,11 +197,23 @@ export default function Chat({ onBack }) {
             {/* WHEEL TAB */}
             {activeTab === 'wheel' && (
               <div className="space-y-4 animate-fade-in">
-                <h3 className="text-xs font-bold text-astro-gold uppercase tracking-wider flex items-center gap-1.5">
-                  <Orbit className="h-3.5 w-3.5 text-astro-gold" />
-                  <span>Interactive Chart</span>
-                </h3>
-                <AstroWheel chart={formattedChart} />
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xs font-bold text-astro-gold uppercase tracking-wider flex items-center gap-1.5">
+                    <Orbit className="h-3.5 w-3.5 text-astro-gold" />
+                    <span>Interactive Chart</span>
+                  </h3>
+                  <button
+                    onClick={() => setChartStyle(chartStyle === 'circular' ? 'south' : 'circular')}
+                    className="px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase border bg-transparent text-astro-textMuted border-astro-cardBorder border-opacity-30 hover:border-opacity-65 hover:text-astro-gold cursor-pointer transition-all duration-300"
+                  >
+                    Style: {chartStyle === 'circular' ? 'Western' : 'Vedic'}
+                  </button>
+                </div>
+                {chartStyle === 'circular' ? (
+                  <AstroWheel chart={formattedChart} />
+                ) : (
+                  <SouthIndianChart chart={formattedChart} />
+                )}
                 <ElementBalance chart={formattedChart} />
                 <HouseAccordion chart={formattedChart} />
                 <MoonPhase />
