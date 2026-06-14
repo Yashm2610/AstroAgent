@@ -89,6 +89,7 @@ export default function Chat({ onBack }) {
   const [partnerSign, setPartnerSign] = useState('Aries');
   const [oracleOpen, setOracleOpen] = useState(false);
   const [chartStyle, setChartStyle] = useState('circular'); // 'circular' | 'south'
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -417,17 +418,30 @@ export default function Chat({ onBack }) {
             </div>
           </div>
           
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-xl bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 text-astro-textMuted hover:text-astro-gold transition-all duration-300 flex items-center gap-1.5 cursor-pointer text-xs font-semibold shadow-glow"
-          >
-            <Layout className="h-4 w-4" />
-            <span className="hidden sm:inline">{sidebarOpen ? 'Hide Blueprint' : 'Show Blueprint'}</span>
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Search Input */}
+            <div className="hidden md:flex items-center gap-1 bg-[#0a0b16] bg-opacity-40 border border-astro-cardBorder border-opacity-20 px-2.5 py-1 rounded-full text-[10px] font-mono w-44">
+              <input
+                type="text"
+                placeholder="Search consultation..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-transparent text-astro-gold placeholder-astro-textMuted focus:outline-none w-full border-none outline-none text-[10px] py-0"
+              />
+            </div>
+
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded-xl bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 text-astro-textMuted hover:text-astro-gold transition-all duration-300 flex items-center gap-1.5 cursor-pointer text-xs font-semibold shadow-glow"
+            >
+              <Layout className="h-4 w-4" />
+              <span className="hidden sm:inline">{sidebarOpen ? 'Hide Blueprint' : 'Show Blueprint'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Chat Messages scroll area */}
-        <ChatWindow />
+        <ChatWindow searchFilter={searchQuery} />
 
         {/* Message Input box */}
         <div className="p-4 border-t border-astro-cardBorder border-opacity-30 bg-astro-indigo bg-opacity-10">
