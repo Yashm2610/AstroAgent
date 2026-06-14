@@ -349,6 +349,7 @@ export default function Chat({ onBack }) {
                       </p>
                     </div>
                   )}
+                </div>
               </div>
             )}
 

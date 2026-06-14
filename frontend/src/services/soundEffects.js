@@ -7,6 +7,36 @@ let ambientCtx = null;
 let masterGainNode = null;
 let activeElement = 'water';
 
+export const getDominantElement = (chart) => {
+  if (!chart || !chart.planets) return 'water';
+  const SIGN_ELEMENTS = {
+    Aries: 'fire', Leo: 'fire', Sagittarius: 'fire',
+    Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth',
+    Gemini: 'air', Libra: 'air', Aquarius: 'air',
+    Cancer: 'water', Scorpio: 'water', Pisces: 'water'
+  };
+  const points = { fire: 0, earth: 0, air: 0, water: 0 };
+  if (chart.ascendant && SIGN_ELEMENTS[chart.ascendant]) {
+    points[SIGN_ELEMENTS[chart.ascendant]] += 2;
+  }
+  Object.entries(chart.planets).forEach(([key, planet]) => {
+    const element = SIGN_ELEMENTS[planet.sign];
+    if (element) {
+      const weight = (key === 'sun' || key === 'moon') ? 2 : 1;
+      points[element] += weight;
+    }
+  });
+  let dominant = 'water';
+  let maxVal = -1;
+  Object.entries(points).forEach(([elem, val]) => {
+    if (val > maxVal) {
+      maxVal = val;
+      dominant = elem;
+    }
+  });
+  return dominant;
+};
+
 export const toggleMuteStatus = () => {
   isMuted = !isMuted;
   localStorage.setItem('astroagent_muted', String(isMuted));
