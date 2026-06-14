@@ -19,6 +19,7 @@ import MoonPhase from '../components/chat/MoonPhase';
 import SouthIndianChart from '../components/chat/SouthIndianChart';
 import CoordinatesHUD from '../components/chat/CoordinatesHUD';
 import Glossary from '../components/chat/Glossary';
+import Onboarding from '../components/chat/Onboarding';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -442,6 +443,11 @@ export default function Chat({ onBack }) {
               <span className="hidden sm:inline">{sidebarOpen ? 'Hide Blueprint' : 'Show Blueprint'}</span>
             </button>
           </div>
+        </div>
+
+        {/* Onboarding tour guide */}
+        <div className="px-6 pt-4 print:hidden">
+          <Onboarding />
         </div>
 
         {/* Chat Messages scroll area */}
