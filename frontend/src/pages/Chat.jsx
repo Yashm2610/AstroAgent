@@ -11,6 +11,7 @@ import { PLANET_DESCRIPTIONS, ZODIAC_DESCRIPTIONS } from '../services/astrologyI
 import { playMessageChime, getDominantElement, startAmbientDrone, stopAmbientDrone } from '../services/soundEffects';
 import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout, Printer, Heart } from 'lucide-react';
 import OracleDrawer from '../components/chat/OracleDrawer';
+import HouseAccordion from '../components/chat/HouseAccordion';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -190,6 +191,7 @@ export default function Chat({ onBack }) {
                 </h3>
                 <AstroWheel chart={formattedChart} />
                 <ElementBalance chart={formattedChart} />
+                <HouseAccordion chart={formattedChart} />
               </div>
             )}
 
