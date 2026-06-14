@@ -12,6 +12,7 @@ import { playMessageChime, getDominantElement, startAmbientDrone, stopAmbientDro
 import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout, Printer, Heart } from 'lucide-react';
 import OracleDrawer from '../components/chat/OracleDrawer';
 import HouseAccordion from '../components/chat/HouseAccordion';
+import PlanetaryDignities from '../components/chat/PlanetaryDignities';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -225,6 +226,7 @@ export default function Chat({ onBack }) {
                     );
                   })}
                 </div>
+                <PlanetaryDignities chart={formattedChart} />
               </div>
             )}
 
