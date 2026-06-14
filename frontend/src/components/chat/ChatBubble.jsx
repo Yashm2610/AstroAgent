@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
-import { User, Sparkles } from 'lucide-react';
+import { User, Sparkles, Star } from 'lucide-react';
 
 export default function ChatBubble({ message }) {
   const isUser = message.role === 'user';
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  useEffect(() => {
+    if (isUser) return;
+    const journal = JSON.parse(localStorage.getItem('astroagent_journal') || '[]');
+    setIsBookmarked(journal.some(item => item.id === message.id || item.text === message.content));
+  }, [message.content, isUser, message.id]);
+
+  const toggleBookmark = () => {
+    const journal = JSON.parse(localStorage.getItem('astroagent_journal') || '[]');
+    if (isBookmarked) {
+      const next = journal.filter(item => item.text !== message.content);
+      localStorage.setItem('astroagent_journal', JSON.stringify(next));
+      setIsBookmarked(false);
+    } else {
+      const entry = {
+        id: message.id || `entry_${Date.now()}`,
+        text: message.content,
+        timestamp: Date.now()
+      };
+      journal.push(entry);
+      localStorage.setItem('astroagent_journal', JSON.stringify(journal));
+      setIsBookmarked(true);
+    }
+  };
 
   return (
     <motion.div 
@@ -22,12 +47,23 @@ export default function ChatBubble({ message }) {
 
       {/* Message Bubble */}
       <div
-        className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-5 py-3.5 text-sm font-sans relative ${
+        className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-5 py-3.5 text-sm font-sans relative group ${
           isUser
             ? 'bg-gradient-to-tr from-astro-purple to-[#8c66ff] text-astro-textMain rounded-tr-none shadow-glow border border-white border-opacity-10'
             : 'bg-astro-card bg-opacity-80 border border-astro-cardBorder text-astro-textMain rounded-tl-none shadow-glow'
         }`}
       >
+        {/* Bookmark button */}
+        {!isUser && (
+          <button
+            onClick={toggleBookmark}
+            className="absolute top-2 right-2 p-1 rounded hover:bg-astro-indigo hover:text-astro-gold text-astro-textMuted transition opacity-0 group-hover:opacity-100 cursor-pointer"
+            title="Bookmark insight"
+          >
+            <Star className={`h-3.5 w-3.5 ${isBookmarked ? 'fill-astro-gold text-astro-gold' : 'text-astro-textMuted'}`} />
+          </button>
+        )}
+
         {/* Glow point behind bot bubble */}
         {!isUser && (
           <div className="absolute -top-10 -left-10 h-24 w-24 bg-astro-gold opacity-[0.03] blur-xl rounded-full pointer-events-none"></div>
@@ -36,7 +72,7 @@ export default function ChatBubble({ message }) {
         {isUser ? (
           <p className="whitespace-pre-wrap leading-relaxed text-[13px]">{message.content}</p>
         ) : (
-          <div className="prose prose-invert max-w-none text-astro-textMain leading-relaxed space-y-2 text-[13px]">
+          <div className="prose prose-invert max-w-none text-astro-textMain leading-relaxed space-y-2 text-[13px] pr-2">
             <ReactMarkdown
               components={{
                 p: ({ node, ...props }) => <p className="mb-2.5 last:mb-0 leading-relaxed" {...props} />,

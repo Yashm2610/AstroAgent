@@ -13,6 +13,7 @@ import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, L
 import OracleDrawer from '../components/chat/OracleDrawer';
 import HouseAccordion from '../components/chat/HouseAccordion';
 import PlanetaryDignities from '../components/chat/PlanetaryDignities';
+import AstroJournal from '../components/chat/AstroJournal';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -155,30 +156,36 @@ export default function Chat({ onBack }) {
           <div className="absolute top-0 right-0 h-16 w-16 bg-astro-gold opacity-5 blur-2xl rounded-full"></div>
           
           {/* Tabs header control */}
-          <div className="flex bg-astro-indigo bg-opacity-40 p-1 rounded-xl border border-astro-cardBorder border-opacity-15 mb-4">
+          <div className="flex bg-astro-indigo bg-opacity-40 p-1 rounded-xl border border-astro-cardBorder border-opacity-15 mb-4 overflow-x-auto scrollbar-thin">
             <button
               onClick={() => setActiveTab('wheel')}
-              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'wheel' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+              className={`flex-shrink-0 px-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer flex-1 ${activeTab === 'wheel' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Wheel
             </button>
             <button
               onClick={() => setActiveTab('planets')}
-              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'planets' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+              className={`flex-shrink-0 px-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer flex-1 ${activeTab === 'planets' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Planets
             </button>
             <button
               onClick={() => setActiveTab('coords')}
-              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'coords' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+              className={`flex-shrink-0 px-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer flex-1 ${activeTab === 'coords' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Coords
             </button>
             <button
               onClick={() => setActiveTab('compat')}
-              className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer ${activeTab === 'compat' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+              className={`flex-shrink-0 px-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer flex-1 ${activeTab === 'compat' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Match
+            </button>
+            <button
+              onClick={() => setActiveTab('journal')}
+              className={`flex-shrink-0 px-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer flex-1 ${activeTab === 'journal' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+            >
+              Journal
             </button>
           </div>
 
@@ -318,8 +325,12 @@ export default function Chat({ onBack }) {
                       </p>
                     </div>
                   )}
-                </div>
               </div>
+            )}
+
+            {/* JOURNAL TAB */}
+            {activeTab === 'journal' && (
+              <AstroJournal />
             )}
           </div>
 
