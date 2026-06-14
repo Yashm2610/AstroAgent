@@ -15,6 +15,7 @@ import HouseAccordion from '../components/chat/HouseAccordion';
 import PlanetaryDignities from '../components/chat/PlanetaryDignities';
 import AstroJournal from '../components/chat/AstroJournal';
 import AspectGrid from '../components/chat/AspectGrid';
+import MoonPhase from '../components/chat/MoonPhase';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -201,6 +202,7 @@ export default function Chat({ onBack }) {
                 <AstroWheel chart={formattedChart} />
                 <ElementBalance chart={formattedChart} />
                 <HouseAccordion chart={formattedChart} />
+                <MoonPhase />
               </div>
             )}
 
