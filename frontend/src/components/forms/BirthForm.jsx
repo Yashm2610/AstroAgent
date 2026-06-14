@@ -15,6 +15,16 @@ export default function BirthForm({ onSuccess }) {
   const [error, setError] = useState('');
   const [activeTip, setActiveTip] = useState(null);
 
+  const [savedProfiles, setSavedProfiles] = useState(() => {
+    return JSON.parse(localStorage.getItem('astroagent_profiles') || '[]');
+  });
+
+  const loadProfile = (p) => {
+    setDob(p.dob.replace(/\//g, '-'));
+    setTime(p.time);
+    setPlace(p.place);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -42,7 +52,7 @@ export default function BirthForm({ onSuccess }) {
 
       if (response.success) {
         playCosmicChime();
-        setBirthDetails({
+        const details = {
           dob: formattedDate,
           time,
           place,
@@ -50,7 +60,18 @@ export default function BirthForm({ onSuccess }) {
           lon: response.lon,
           timezone: response.timezone,
           chart: response.chart
-        });
+        };
+        setBirthDetails(details);
+
+        // Save to saved profiles list
+        const updatedProfiles = [...savedProfiles];
+        const exists = updatedProfiles.some(p => p.dob === formattedDate && p.time === time && p.place.toLowerCase() === place.toLowerCase());
+        if (!exists) {
+          updatedProfiles.push(details);
+          localStorage.setItem('astroagent_profiles', JSON.stringify(updatedProfiles));
+          setSavedProfiles(updatedProfiles);
+        }
+
         if (onSuccess) onSuccess();
       } else {
         setError(response.detail || 'Could not calculate details for this birthplace.');
@@ -91,6 +112,25 @@ export default function BirthForm({ onSuccess }) {
           Enter your precise birth parameters to geocode coordinates and compute planet houses.
         </p>
       </div>
+
+      {/* Saved Profiles history */}
+      {savedProfiles.length > 0 && (
+        <div className="mb-5 space-y-1.5 w-full text-left">
+          <label className="block text-[9px] uppercase tracking-wider text-astro-textMuted font-mono">Load Saved Profile</label>
+          <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-0.5 scrollbar-thin">
+            {savedProfiles.map((p, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => loadProfile(p)}
+                className="px-2 py-1 bg-astro-indigo bg-opacity-45 hover:bg-opacity-65 border border-astro-cardBorder border-opacity-15 hover:border-astro-gold text-astro-gold hover:text-white rounded-lg text-[9px] font-bold font-mono transition cursor-pointer"
+              >
+                {p.place.split(',')[0]} ({p.dob.split('/')[0]})
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Progress completeness gauge */}
       <div className={`mb-6 bg-astro-indigo bg-opacity-40 p-3.5 rounded-xl border transition-all duration-500 ${progressPercent === 100 ? 'border-astro-gold shadow-[0_0_15px_rgba(223,183,60,0.15)]' : 'border-astro-cardBorder border-opacity-10'}`}>
