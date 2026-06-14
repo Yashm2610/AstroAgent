@@ -9,7 +9,8 @@ import ElementBalance from '../components/chat/ElementBalance';
 import AstroPrompts from '../components/chat/AstroPrompts';
 import { PLANET_DESCRIPTIONS, ZODIAC_DESCRIPTIONS } from '../services/astrologyInterpretations';
 import { playMessageChime, getDominantElement, startAmbientDrone, stopAmbientDrone } from '../services/soundEffects';
-import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout, Printer } from 'lucide-react';
+import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout, Printer, Heart } from 'lucide-react';
+import OracleDrawer from '../components/chat/OracleDrawer';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -80,6 +81,7 @@ export default function Chat({ onBack }) {
   const [selectedPlanet, setSelectedPlanet] = useState(null);
   const [showExportModal, setShowExportModal] = useState(false);
   const [partnerSign, setPartnerSign] = useState('Aries');
+  const [oracleOpen, setOracleOpen] = useState(false);
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -336,6 +338,15 @@ export default function Chat({ onBack }) {
           </div>
         </div>
 
+        {/* Oracle Card button */}
+        <button
+          onClick={() => setOracleOpen(true)}
+          className="flex items-center justify-center gap-2 py-2.5 bg-astro-indigo bg-opacity-40 border border-astro-gold border-opacity-35 text-astro-gold hover:bg-opacity-65 rounded-xl transition duration-200 text-xs font-semibold cursor-pointer mb-2 print:hidden shadow-glow"
+        >
+          <Sparkles className="h-4 w-4 star-twinkle-fast" />
+          <span>Draw Oracle Card</span>
+        </button>
+
         {/* Export Profile button */}
         <button
           onClick={() => setShowExportModal(true)}
@@ -527,6 +538,9 @@ export default function Chat({ onBack }) {
             </div>
           </div>
         </div>
+      )}
+      {oracleOpen && (
+        <OracleDrawer isOpen={oracleOpen} onClose={() => setOracleOpen(false)} />
       )}
     </div>
   );
