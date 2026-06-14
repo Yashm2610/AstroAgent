@@ -16,6 +16,20 @@ AstroAgent's front-end client has been upgraded with a high-fidelity cosmic them
 * **Reasoning Activity Logs**: Real-time HUD-style progression tracker indicating backend calculation steps (geolocating, chart computation, RAG database lookup).
 * **Collapsible Space-Time Layout**: Toggle sidebar blueprints on desktop and mobile viewports to maximize writing area.
 * **CSS Starry Sky Backdrop**: Smoothly animated parallax stars background and micro-interactions powered by `framer-motion`.
+* **Celestial Oracle Deck**: Draw a daily card for meditation and spiritual focus.
+* **Vedic Grid Chart Layout**: Alternate layout style toggling standard Western circle wheel to South Indian square-style chart.
+* **Star Map Coordinates HUD**: Live Right Ascension (RA) and Declination (Dec) values calculated and rendered dynamically.
+* **Astro-Journal Bookmarks**: message-level bookmarking, persisting saved notes, chat responses, and readings.
+* **Planet Aspect Grid Matrix**: Geometric relationships (Conjunction, Square, Trine, Opposition, Sextile) between planets.
+* **Moon Phase Widget**: Visual moon phase age, illumination, and calendar representation.
+* **Soundscape Options & Master Volume**: Master volume sliders and distinct ambient tracks (Cosmic Drone, Solfeggio 528Hz, Theta Waves).
+* **Downloadable Chart SVG**: Export chart SVG instantly.
+* **Typography pairing configurator**: Global selector to switch Classic Serif, Space Monospace, and Sans-serif styles.
+* **Accessibility glow toggler**: Ability to disable high-performance CSS animations (mouse trail, twinkling stars) for accessibility.
+* **Onboarding tutorial wizard**: Welcomes users with a step-by-step walkthrough of client panels.
+* **Profile switcher history**: Allows saving multiple birth profiles to quickly prefill parameters.
+* **Emoji reaction tray**: Direct reactions (✨, 🪐, 🔮, 🙏) on message bubbles.
+* **Interactive glossary**: Comprehensive definitions of astrological terminology.
 
 ---
 
