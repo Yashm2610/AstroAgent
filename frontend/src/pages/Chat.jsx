@@ -17,6 +17,7 @@ import AstroJournal from '../components/chat/AstroJournal';
 import AspectGrid from '../components/chat/AspectGrid';
 import MoonPhase from '../components/chat/MoonPhase';
 import SouthIndianChart from '../components/chat/SouthIndianChart';
+import CoordinatesHUD from '../components/chat/CoordinatesHUD';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -291,6 +292,7 @@ export default function Chat({ onBack }) {
                     <div>Lon: {Number(birthDetails?.lon).toFixed(4)}°</div>
                   </div>
                 </div>
+                <CoordinatesHUD chart={formattedChart} />
               </div>
             )}
 
