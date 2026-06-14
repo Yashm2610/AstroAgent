@@ -7,10 +7,16 @@ export const useChatStore = create((set) => ({
   activeTools: [], // tracks executing tools (e.g. ['tool_geocode_place'])
   isLoading: false,
   theme: localStorage.getItem('astroagent_theme') || 'indigo',
+  fontPairing: localStorage.getItem('astroagent_font') || 'sans',
 
   setTheme: (theme) => {
     localStorage.setItem('astroagent_theme', theme);
     set({ theme });
+  },
+
+  setFontPairing: (fontPairing) => {
+    localStorage.setItem('astroagent_font', fontPairing);
+    set({ fontPairing });
   },
 
   setBirthDetails: (details) => {

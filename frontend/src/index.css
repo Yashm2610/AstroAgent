@@ -170,3 +170,15 @@
   background: #2a2e5c;
 }
 
+/* Font pairings */
+body.font-sans-pair {
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+}
+body.font-serif-pair {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+}
+body.font-mono-pair {
+  font-family: 'Space Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+

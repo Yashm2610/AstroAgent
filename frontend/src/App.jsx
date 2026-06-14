@@ -8,15 +8,16 @@ import { toggleMuteStatus, getMuteStatus, startAmbientDrone, stopAmbientDrone, g
 import MouseTrail from './components/chat/MouseTrail';
 
 export default function App() {
-  const { birthDetails, setBirthDetails, theme, setTheme } = useChatStore();
+  const { birthDetails, setBirthDetails, theme, setTheme, fontPairing, setFontPairing } = useChatStore();
   const [view, setView] = useState('home'); // 'home' | 'birth-form' | 'chat'
   const [muted, setMuted] = useState(getMuteStatus());
 
-  // Apply theme class to body
+  // Apply theme and font class to body
   useEffect(() => {
     document.body.className = '';
     document.body.classList.add(`theme-${theme}`);
-  }, [theme]);
+    document.body.classList.add(`font-${fontPairing}-pair`);
+  }, [theme, fontPairing]);
 
   // Restore session if details are stored in localStorage
   useEffect(() => {
@@ -76,6 +77,20 @@ export default function App() {
               <option value="nebula" className="bg-[#080312] text-[#dfb73c]">Nebula</option>
               <option value="silver" className="bg-[#06080e] text-[#dfb73c]">Silver</option>
               <option value="aurora" className="bg-[#022c22] text-[#dfb73c]">Aurora</option>
+            </select>
+          </div>
+
+          {/* Font Selector */}
+          <div className="flex items-center gap-1.5 bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 px-2.5 py-1 rounded-full text-[10px] font-mono">
+            <span className="text-astro-textMuted uppercase">Font:</span>
+            <select
+              value={fontPairing}
+              onChange={(e) => setFontPairing(e.target.value)}
+              className="bg-transparent text-astro-gold font-bold focus:outline-none cursor-pointer uppercase text-[10px] border-none outline-none"
+            >
+              <option value="sans" className="bg-[#0a0b16] text-[#dfb73c]">Sans</option>
+              <option value="serif" className="bg-[#0a0b16] text-[#dfb73c]">Serif</option>
+              <option value="mono" className="bg-[#0a0b16] text-[#dfb73c]">Mono</option>
             </select>
           </div>
 
