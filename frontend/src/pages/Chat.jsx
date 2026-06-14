@@ -14,6 +14,7 @@ import OracleDrawer from '../components/chat/OracleDrawer';
 import HouseAccordion from '../components/chat/HouseAccordion';
 import PlanetaryDignities from '../components/chat/PlanetaryDignities';
 import AstroJournal from '../components/chat/AstroJournal';
+import AspectGrid from '../components/chat/AspectGrid';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -234,6 +235,7 @@ export default function Chat({ onBack }) {
                   })}
                 </div>
                 <PlanetaryDignities chart={formattedChart} />
+                <AspectGrid chart={formattedChart} />
               </div>
             )}
 
