@@ -80,6 +80,27 @@ export default function AstroWheel({ chart }) {
   const [hoveredHouse, setHoveredHouse] = useState(null);
   const [showTransits, setShowTransits] = useState(false);
 
+  const downloadChartSVG = () => {
+    const svgEl = document.getElementById('astro-chart-svg');
+    if (!svgEl) return;
+    const serializer = new XMLSerializer();
+    let source = serializer.serializeToString(svgEl);
+    if (!source.match(/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    if (!source.match(/^<svg[^>]+xmlns:xlink="http:\/\/www\.w3\.org\/1999\/xlink"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+    source = '<?xml version="1.0" encoding="utf-8"?>\n' + source;
+    const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    downloadLink.download = "natal_chart.svg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   const getTransitPositions = () => {
     const transits = {};
     const shifts = {
@@ -403,19 +424,28 @@ export default function AstroWheel({ chart }) {
     <div className="flex flex-col items-center justify-center bg-astro-indigo bg-opacity-25 border border-astro-cardBorder border-opacity-30 rounded-2xl p-4 shadow-glow w-full">
       <div className="flex justify-between items-center w-full mb-3 px-1">
         <span className="text-[10px] font-bold text-astro-gold uppercase tracking-wider font-mono">Natal Chart</span>
-        <button
-          onClick={() => setShowTransits(!showTransits)}
-          className={`px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase border cursor-pointer transition-all duration-300 ${
-            showTransits 
-              ? 'bg-astro-purple text-white border-astro-purple border-opacity-50' 
-              : 'bg-transparent text-astro-textMuted border-astro-cardBorder border-opacity-30 hover:border-opacity-65 hover:text-astro-gold'
-          }`}
-        >
-          {showTransits ? 'Transits ON' : 'Show Transits'}
-        </button>
+        <div className="flex gap-1.5">
+          <button
+            onClick={downloadChartSVG}
+            className="px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase border bg-transparent text-astro-textMuted border-astro-cardBorder border-opacity-30 hover:border-opacity-65 hover:text-astro-gold cursor-pointer transition-all duration-300"
+            title="Download Chart SVG"
+          >
+            Download SVG
+          </button>
+          <button
+            onClick={() => setShowTransits(!showTransits)}
+            className={`px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase border cursor-pointer transition-all duration-300 ${
+              showTransits 
+                ? 'bg-astro-purple text-white border-astro-purple border-opacity-50' 
+                : 'bg-transparent text-astro-textMuted border-astro-cardBorder border-opacity-30 hover:border-opacity-65 hover:text-astro-gold'
+            }`}
+          >
+            {showTransits ? 'Transits ON' : 'Show Transits'}
+          </button>
+        </div>
       </div>
       <div className="relative w-64 h-64">
-        <svg className="w-full h-full" viewBox="0 0 240 240">
+        <svg id="astro-chart-svg" className="w-full h-full" viewBox="0 0 240 240">
           <defs>
             <radialGradient id="wheelGlow" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#1e1b4b" stopOpacity="0.8" />
