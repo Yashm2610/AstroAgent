@@ -6,6 +6,16 @@ import { User, Sparkles, Star } from 'lucide-react';
 export default function ChatBubble({ message }) {
   const isUser = message.role === 'user';
   const [isBookmarked, setIsBookmarked] = useState(false);
+  
+  const reactionKey = `reactions_${message.id || message.content.substring(0, 32)}`;
+  const [activeReactions, setActiveReactions] = useState({});
+
+  useEffect(() => {
+    const saved = localStorage.getItem(reactionKey);
+    if (saved) {
+      setActiveReactions(JSON.parse(saved));
+    }
+  }, [reactionKey]);
 
   useEffect(() => {
     if (isUser) return;
@@ -31,6 +41,12 @@ export default function ChatBubble({ message }) {
     }
   };
 
+  const toggleReaction = (emoji) => {
+    const next = { ...activeReactions, [emoji]: !activeReactions[emoji] };
+    setActiveReactions(next);
+    localStorage.setItem(reactionKey, JSON.stringify(next));
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 15 }}
@@ -53,15 +69,36 @@ export default function ChatBubble({ message }) {
             : 'bg-astro-card bg-opacity-80 border border-astro-cardBorder text-astro-textMain rounded-tl-none shadow-glow'
         }`}
       >
-        {/* Bookmark button */}
+        {/* Bookmark and reactions tray */}
         {!isUser && (
-          <button
-            onClick={toggleBookmark}
-            className="absolute top-2 right-2 p-1 rounded hover:bg-astro-indigo hover:text-astro-gold text-astro-textMuted transition opacity-0 group-hover:opacity-100 cursor-pointer"
-            title="Bookmark insight"
-          >
-            <Star className={`h-3.5 w-3.5 ${isBookmarked ? 'fill-astro-gold text-astro-gold' : 'text-astro-textMuted'}`} />
-          </button>
+          <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition duration-200 bg-[#0d0e26] border border-astro-cardBorder border-opacity-35 px-2 py-0.5 rounded-full shadow-glow">
+            <button
+              onClick={toggleBookmark}
+              className="p-0.5 rounded hover:bg-astro-indigo hover:text-astro-gold text-astro-textMuted cursor-pointer"
+              title="Bookmark insight"
+            >
+              <Star className={`h-3 w-3 ${isBookmarked ? 'fill-astro-gold text-astro-gold' : 'text-astro-textMuted'}`} />
+            </button>
+            
+            {['✨', '🪐', '🔮', '🙏'].map(emoji => (
+              <button
+                key={emoji}
+                onClick={() => toggleReaction(emoji)}
+                className={`p-0.5 rounded hover:bg-astro-indigo text-[10px] cursor-pointer transition ${activeReactions[emoji] ? 'bg-astro-indigo scale-110' : 'opacity-60 hover:opacity-100'}`}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Active reactions bubble summary */}
+        {Object.entries(activeReactions).some(([_, active]) => active) && (
+          <div className="absolute -bottom-2.5 right-4 flex gap-1 bg-[#0d0e26] border border-astro-cardBorder border-opacity-35 px-1.5 py-0.5 rounded-full text-[9px] shadow-glow">
+            {Object.entries(activeReactions).map(([emoji, active]) => active && (
+              <span key={emoji}>{emoji}</span>
+            ))}
+          </div>
         )}
 
         {/* Glow point behind bot bubble */}
