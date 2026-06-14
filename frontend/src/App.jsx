@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useChatStore } from './store/chatStore';
 import Home from './pages/Home';
 import BirthForm from './components/forms/BirthForm';
@@ -13,6 +14,21 @@ export default function App() {
   const [muted, setMuted] = useState(getMuteStatus());
   const [volumeVal, setVolumeVal] = useState(getSoundVolume());
   const [trackVal, setTrackVal] = useState(getSoundTrack());
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [displayName, setDisplayName] = useState(localStorage.getItem('astroagent_display_name') || 'Cosmic Traveler');
+  const [avatar, setAvatar] = useState(localStorage.getItem('astroagent_user_avatar') || '🧙‍♂️');
+  const [coordRep, setCoordRep] = useState(localStorage.getItem('astroagent_coord_rep') || 'dms');
+
+  const handleSaveSettings = (name, av, coord) => {
+    setDisplayName(name);
+    localStorage.setItem('astroagent_display_name', name);
+    setAvatar(av);
+    localStorage.setItem('astroagent_user_avatar', av);
+    setCoordRep(coord);
+    localStorage.setItem('astroagent_coord_rep', coord);
+    setSettingsOpen(false);
+  };
 
   // Apply theme and font class to body
   useEffect(() => {
@@ -96,6 +112,15 @@ export default function App() {
             </select>
           </div>
 
+          {/* Profile settings button */}
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="p-1.5 rounded-full bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 text-astro-gold hover:text-astro-goldHover transition cursor-pointer flex items-center justify-center font-bold"
+            title="User Profile Settings"
+          >
+            <span className="text-sm leading-none">{avatar}</span>
+          </button>
+
           {/* Mute Toggle */}
           <button
             onClick={() => {
@@ -173,6 +198,89 @@ export default function App() {
         
         {view === 'chat' && <Chat onBack={handleResetBirthDetails} />}
       </main>
+
+      {/* Settings Modal */}
+      <AnimatePresence>
+        {settingsOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-astro-card border border-astro-cardBorder rounded-2xl max-w-sm w-full p-6 shadow-glow relative overflow-hidden text-sans text-astro-textMain"
+            >
+              <div className="flex justify-between items-center border-b border-astro-cardBorder border-opacity-25 pb-3 mb-4">
+                <h3 className="text-sm font-bold text-astro-gold uppercase tracking-wider font-mono">Profile Settings</h3>
+                <button 
+                  onClick={() => setSettingsOpen(false)}
+                  className="text-astro-textMuted hover:text-astro-gold transition-colors text-sm font-semibold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Display Name */}
+                <div>
+                  <label className="block text-[9px] uppercase tracking-wider text-astro-textMuted font-mono mb-1.5">Display Name</label>
+                  <input
+                    type="text"
+                    defaultValue={displayName}
+                    id="settings-name-input"
+                    className="w-full text-xs font-semibold text-astro-textMain bg-[#0a0b16] px-3 py-2 border border-astro-cardBorder border-opacity-35 rounded-lg focus:outline-none focus:border-astro-gold"
+                  />
+                </div>
+
+                {/* Avatar Selection */}
+                <div>
+                  <label className="block text-[9px] uppercase tracking-wider text-astro-textMuted font-mono mb-1.5">Select Avatar</label>
+                  <div className="grid grid-cols-4 gap-2 text-xl">
+                    {['🧙‍♂️', '🪐', '🔮', '🦄', '👽', '🦊', '🐉', '🔱'].map(avEmoji => (
+                      <button
+                        key={avEmoji}
+                        onClick={() => setAvatar(avEmoji)}
+                        className={`p-2 rounded-lg border transition ${avatar === avEmoji ? 'border-astro-gold bg-astro-indigo bg-opacity-35' : 'border-astro-cardBorder border-opacity-15 bg-[#0a0b16] hover:border-opacity-35'}`}
+                      >
+                        {avEmoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Coordinate representation */}
+                <div>
+                  <label className="block text-[9px] uppercase tracking-wider text-astro-textMuted font-mono mb-1.5">Coordinate Mode</label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setCoordRep('dms')}
+                      className={`flex-1 py-1.5 text-xs rounded-lg border transition ${coordRep === 'dms' ? 'border-astro-gold bg-astro-indigo bg-opacity-35 text-astro-gold font-bold' : 'border-astro-cardBorder border-opacity-15 bg-[#0a0b16] text-astro-textMuted'}`}
+                    >
+                      DMS (° ' ")
+                    </button>
+                    <button
+                      onClick={() => setCoordRep('decimal')}
+                      className={`flex-1 py-1.5 text-xs rounded-lg border transition ${coordRep === 'decimal' ? 'border-astro-gold bg-astro-indigo bg-opacity-35 text-astro-gold font-bold' : 'border-astro-cardBorder border-opacity-15 bg-[#0a0b16] text-astro-textMuted'}`}
+                    >
+                      Decimal
+                    </button>
+                  </div>
+                </div>
+
+                {/* Save button */}
+                <button
+                  onClick={() => {
+                    const inputVal = document.getElementById('settings-name-input').value || 'Cosmic Traveler';
+                    handleSaveSettings(inputVal, avatar, coordRep);
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-astro-gold to-[#fbe087] text-astro-bg rounded-xl text-xs font-bold shadow-goldGlow cursor-pointer hover:scale-[1.01] transition"
+                >
+                  Save Profile
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="py-4 text-center text-xs text-astro-textMuted border-t border-astro-cardBorder border-opacity-10 bg-astro-bg bg-opacity-90">
