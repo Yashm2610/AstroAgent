@@ -19,14 +19,17 @@ export default function App() {
   const [displayName, setDisplayName] = useState(localStorage.getItem('astroagent_display_name') || 'Cosmic Traveler');
   const [avatar, setAvatar] = useState(localStorage.getItem('astroagent_user_avatar') || '🧙‍♂️');
   const [coordRep, setCoordRep] = useState(localStorage.getItem('astroagent_coord_rep') || 'dms');
+  const [glowEnabled, setGlowEnabled] = useState(localStorage.getItem('astroagent_glow_enabled') !== 'false');
 
-  const handleSaveSettings = (name, av, coord) => {
+  const handleSaveSettings = (name, av, coord, glow) => {
     setDisplayName(name);
     localStorage.setItem('astroagent_display_name', name);
     setAvatar(av);
     localStorage.setItem('astroagent_user_avatar', av);
     setCoordRep(coord);
     localStorage.setItem('astroagent_coord_rep', coord);
+    setGlowEnabled(glow);
+    localStorage.setItem('astroagent_glow_enabled', String(glow));
     setSettingsOpen(false);
   };
 
@@ -35,7 +38,10 @@ export default function App() {
     document.body.className = '';
     document.body.classList.add(`theme-${theme}`);
     document.body.classList.add(`font-${fontPairing}-pair`);
-  }, [theme, fontPairing]);
+    if (!glowEnabled) {
+      document.body.classList.add('disable-effects');
+    }
+  }, [theme, fontPairing, glowEnabled]);
 
   // Restore session if details are stored in localStorage
   useEffect(() => {
@@ -69,7 +75,7 @@ export default function App() {
       <div className="stars-layer-3"></div>
       
       {/* Mouse cursor particle trail */}
-      <MouseTrail />
+      {glowEnabled && <MouseTrail />}
       
       {/* Top Navigation Header */}
       <header className="px-6 py-4 border-b border-astro-cardBorder border-opacity-25 flex items-center justify-between backdrop-blur-md bg-astro-bg bg-opacity-80 sticky top-0 z-50">
@@ -266,11 +272,23 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Glow Effects toggle */}
+                <div className="flex items-center justify-between py-1">
+                  <label className="text-[9px] uppercase tracking-wider text-astro-textMuted font-mono">Glow Effects</label>
+                  <input
+                    type="checkbox"
+                    defaultChecked={glowEnabled}
+                    id="settings-glow-checkbox"
+                    className="w-4 h-4 rounded border-astro-cardBorder bg-astro-indigo text-astro-gold accent-astro-gold cursor-pointer"
+                  />
+                </div>
+
                 {/* Save button */}
                 <button
                   onClick={() => {
                     const inputVal = document.getElementById('settings-name-input').value || 'Cosmic Traveler';
-                    handleSaveSettings(inputVal, avatar, coordRep);
+                    const glowVal = document.getElementById('settings-glow-checkbox').checked;
+                    handleSaveSettings(inputVal, avatar, coordRep, glowVal);
                   }}
                   className="w-full py-2.5 bg-gradient-to-r from-astro-gold to-[#fbe087] text-astro-bg rounded-xl text-xs font-bold shadow-goldGlow cursor-pointer hover:scale-[1.01] transition"
                 >

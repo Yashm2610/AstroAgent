@@ -180,5 +180,23 @@ body.font-serif-pair {
 body.font-mono-pair {
   font-family: 'Space Mono', 'Fira Code', 'Courier New', monospace;
 }
+/* Accessibility Reduced Motion & Low Power Mode */
+body.disable-effects .stars-layer-1,
+body.disable-effects .stars-layer-2,
+body.disable-effects .stars-layer-3,
+body.disable-effects .star-twinkle-fast,
+body.disable-effects .star-twinkle-slow,
+body.disable-effects .rotate-slow,
+body.disable-effects .float-slow,
+body.disable-effects .float-medium,
+body.disable-effects .animate-spin,
+body.disable-effects .pulsing-border {
+  animation: none !important;
+  box-shadow: none !important;
+}
 
-
+body.disable-effects .shadow-glow,
+body.disable-effects .shadow-goldGlow,
+body.disable-effects .shadow-2xl {
+  box-shadow: none !important;
+}
