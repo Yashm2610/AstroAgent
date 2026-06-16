@@ -200,3 +200,5 @@ body.disable-effects .shadow-goldGlow,
 body.disable-effects .shadow-2xl {
   box-shadow: none !important;
 }
+
+/* UI Refinement Step 1: Update UI: Add primary color variables */
