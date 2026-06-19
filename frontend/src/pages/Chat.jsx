@@ -20,6 +20,7 @@ import SouthIndianChart from '../components/chat/SouthIndianChart';
 import CoordinatesHUD from '../components/chat/CoordinatesHUD';
 import Glossary from '../components/chat/Glossary';
 import Onboarding from '../components/chat/Onboarding';
+import ZodiacLegend from '../components/chat/ZodiacLegend';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -256,6 +257,7 @@ export default function Chat({ onBack }) {
                 </div>
                 <PlanetaryDignities chart={formattedChart} />
                 <AspectGrid chart={formattedChart} />
+                <ZodiacLegend />
               </div>
             )}
 
