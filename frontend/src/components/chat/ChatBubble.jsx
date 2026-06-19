@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
-import { User, Sparkles, Star } from 'lucide-react';
+import { User, Sparkles, Star, Copy, Check } from 'lucide-react';
 
 export default function ChatBubble({ message }) {
   const isUser = message.role === 'user';
@@ -39,6 +39,13 @@ export default function ChatBubble({ message }) {
       localStorage.setItem('astroagent_journal', JSON.stringify(journal));
       setIsBookmarked(true);
     }
+  };
+
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(message.content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const toggleReaction = (emoji) => {
@@ -128,6 +135,15 @@ export default function ChatBubble({ message }) {
             </ReactMarkdown>
           </div>
         )}
+
+        {/* Copy Button */}
+        <button
+          onClick={handleCopy}
+          className="absolute bottom-2.5 right-2.5 p-0.5 rounded hover:bg-astro-indigo hover:text-astro-gold text-astro-textMuted transition opacity-0 group-hover:opacity-100 cursor-pointer"
+          title="Copy message"
+        >
+          {copied ? <Check className="h-3 w-3 text-green-400" /> : <Copy className="h-3 w-3" />}
+        </button>
       </div>
 
       {/* User Icon */}
