@@ -79,6 +79,7 @@ export default function AstroWheel({ chart }) {
   
   const [hoveredHouse, setHoveredHouse] = useState(null);
   const [showTransits, setShowTransits] = useState(false);
+  const [wheelRotation, setWheelRotation] = useState(0);
 
   const downloadChartSVG = () => {
     const svgEl = document.getElementById('astro-chart-svg');
@@ -469,25 +470,41 @@ export default function AstroWheel({ chart }) {
             points={`${cx},${cy-8} ${cx+2},${cy-2} ${cx+8},${cy} ${cx+2},${cy+2} ${cx},${cy+8} ${cx-2},${cy+2} ${cx-8},${cy} ${cx-2},${cy-2}`}
             fill="#dfb73c"
           />
+          
+          <g transform={`rotate(${wheelRotation}, ${cx}, ${cy})`}>
+            {/* House Sectors */}
+            {houseSectors}
 
-          {/* House Sectors */}
-          {houseSectors}
+            {/* Spokes and divisions */}
+            {spokes}
 
-          {/* Spokes and divisions */}
-          {spokes}
+            {/* Astrological Aspect Lines */}
+            {aspectLines}
 
-          {/* Astrological Aspect Lines */}
-          {aspectLines}
+            {/* Planet SVG Elements */}
+            {planetElements}
 
-          {/* Planet SVG Elements */}
-          {planetElements}
-
-          {/* Zodiac Labels */}
-          {zodiacLabels}
+            {/* Zodiac Labels */}
+            {zodiacLabels}
+          </g>
 
           {/* Outer Ring Border highlights */}
           <circle cx={cx} cy={cy} r="115" fill="none" stroke="rgba(125, 82, 255, 0.3)" strokeWidth="0.5" className="star-twinkle-slow" />
         </svg>
+      </div>
+
+      {/* Rotation slider */}
+      <div className="w-full mt-2.5 flex items-center justify-between gap-3 px-3 py-1.5 bg-[#0a0b16] bg-opacity-35 border border-astro-cardBorder border-opacity-15 rounded-xl">
+        <span className="text-[9px] font-bold text-astro-textMuted uppercase tracking-wider font-mono">Rotate Wheel:</span>
+        <input 
+          type="range"
+          min="0"
+          max="360"
+          value={wheelRotation}
+          onChange={(e) => setGlowEnabled ? setWheelRotation(parseInt(e.target.value)) : setWheelRotation(parseInt(e.target.value))}
+          className="flex-1 h-1 bg-astro-cardBorder rounded-lg appearance-none cursor-pointer accent-astro-gold"
+        />
+        <span className="text-[9px] font-mono font-bold text-astro-gold">{wheelRotation}°</span>
       </div>
 
       {/* House info tooltip display */}
