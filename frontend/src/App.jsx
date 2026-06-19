@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import BirthForm from './components/forms/BirthForm';
 import Chat from './pages/Chat';
 import { Moon, Sparkles, Volume2, VolumeX } from 'lucide-react';
-import { toggleMuteStatus, getMuteStatus, startAmbientDrone, stopAmbientDrone, getDominantElement, getSoundVolume, getSoundTrack, setSoundVolume, setSoundTrack } from './services/soundEffects';
+import { toggleMuteStatus, getMuteStatus, startAmbientDrone, stopAmbientDrone, getDominantElement, getSoundVolume, getSoundTrack, setSoundVolume, setSoundTrack, playCosmicChime, playMessageChime } from './services/soundEffects';
 import MouseTrail from './components/chat/MouseTrail';
 
 export default function App() {
@@ -289,6 +289,27 @@ export default function App() {
                     id="settings-glow-checkbox"
                     className="w-4 h-4 rounded border-astro-cardBorder bg-astro-indigo text-astro-gold accent-astro-gold cursor-pointer"
                   />
+                </div>
+
+                {/* Celestial Soundboard */}
+                <div className="space-y-1.5 py-1">
+                  <label className="block text-[9px] uppercase tracking-wider text-astro-textMuted font-mono">Celestial Soundboard</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => playCosmicChime()}
+                      className="flex-1 py-1.5 bg-[#0a0b16] border border-astro-cardBorder border-opacity-20 hover:border-astro-gold rounded-lg text-[9px] font-mono font-bold text-astro-gold hover:text-white transition cursor-pointer"
+                    >
+                      Chart Chime
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => playMessageChime()}
+                      className="flex-1 py-1.5 bg-[#0a0b16] border border-astro-cardBorder border-opacity-20 hover:border-astro-gold rounded-lg text-[9px] font-mono font-bold text-astro-gold hover:text-white transition cursor-pointer"
+                    >
+                      Msg Chime
+                    </button>
+                  </div>
                 </div>
 
                 {/* Nebula Glow Hue customizer */}
