@@ -21,8 +21,9 @@ export default function App() {
   const [coordRep, setCoordRep] = useState(localStorage.getItem('astroagent_coord_rep') || 'dms');
   const [glowEnabled, setGlowEnabled] = useState(localStorage.getItem('astroagent_glow_enabled') !== 'false');
   const [nebulaHue, setNebulaHue] = useState(parseInt(localStorage.getItem('astroagent_nebula_hue') || '260'));
+  const [fontSize, setFontSize] = useState(parseInt(localStorage.getItem('astroagent_font_size') || '13'));
 
-  const handleSaveSettings = (name, av, coord, glow, hue) => {
+  const handleSaveSettings = (name, av, coord, glow, hue, fsize) => {
     setDisplayName(name);
     localStorage.setItem('astroagent_display_name', name);
     setAvatar(av);
@@ -33,6 +34,8 @@ export default function App() {
     localStorage.setItem('astroagent_glow_enabled', String(glow));
     setNebulaHue(hue);
     localStorage.setItem('astroagent_nebula_hue', String(hue));
+    setFontSize(fsize);
+    localStorage.setItem('astroagent_font_size', String(fsize));
     setSettingsOpen(false);
   };
 
@@ -50,6 +53,11 @@ export default function App() {
   useEffect(() => {
     document.documentElement.style.setProperty('--nebula-glow-hue', String(nebulaHue));
   }, [nebulaHue]);
+
+  // Set chat font size CSS variable
+  useEffect(() => {
+    document.documentElement.style.setProperty('--chat-font-size', `${fontSize}px`);
+  }, [fontSize]);
 
   // Restore session if details are stored in localStorage
   useEffect(() => {
@@ -329,13 +337,31 @@ export default function App() {
                   />
                 </div>
 
+                {/* Font Size slider customizer */}
+                <div className="space-y-1 py-1">
+                  <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-astro-textMuted font-mono">
+                    <span>Chat Font Size</span>
+                    <span className="text-astro-gold font-bold">{fontSize}px</span>
+                  </div>
+                  <input 
+                    type="range"
+                    min="11"
+                    max="17"
+                    defaultValue={fontSize}
+                    id="settings-font-size-slider"
+                    onChange={(e) => setFontSize(parseInt(e.target.value))}
+                    className="w-full h-1 bg-[#0a0b16] rounded-lg appearance-none cursor-pointer accent-astro-gold"
+                  />
+                </div>
+
                 {/* Save button */}
                 <button
                   onClick={() => {
                     const inputVal = document.getElementById('settings-name-input').value || 'Cosmic Traveler';
                     const glowVal = document.getElementById('settings-glow-checkbox').checked;
                     const hueVal = parseInt(document.getElementById('settings-nebula-hue-slider').value || '260');
-                    handleSaveSettings(inputVal, avatar, coordRep, glowVal, hueVal);
+                    const sizeVal = parseInt(document.getElementById('settings-font-size-slider').value || '13');
+                    handleSaveSettings(inputVal, avatar, coordRep, glowVal, hueVal, sizeVal);
                   }}
                   className="w-full py-2.5 bg-gradient-to-r from-astro-gold to-[#fbe087] text-astro-bg rounded-xl text-xs font-bold shadow-goldGlow cursor-pointer hover:scale-[1.01] transition"
                 >
