@@ -20,8 +20,9 @@ export default function App() {
   const [avatar, setAvatar] = useState(localStorage.getItem('astroagent_user_avatar') || '🧙‍♂️');
   const [coordRep, setCoordRep] = useState(localStorage.getItem('astroagent_coord_rep') || 'dms');
   const [glowEnabled, setGlowEnabled] = useState(localStorage.getItem('astroagent_glow_enabled') !== 'false');
+  const [nebulaHue, setNebulaHue] = useState(parseInt(localStorage.getItem('astroagent_nebula_hue') || '260'));
 
-  const handleSaveSettings = (name, av, coord, glow) => {
+  const handleSaveSettings = (name, av, coord, glow, hue) => {
     setDisplayName(name);
     localStorage.setItem('astroagent_display_name', name);
     setAvatar(av);
@@ -30,6 +31,8 @@ export default function App() {
     localStorage.setItem('astroagent_coord_rep', coord);
     setGlowEnabled(glow);
     localStorage.setItem('astroagent_glow_enabled', String(glow));
+    setNebulaHue(hue);
+    localStorage.setItem('astroagent_nebula_hue', String(hue));
     setSettingsOpen(false);
   };
 
@@ -42,6 +45,11 @@ export default function App() {
       document.body.classList.add('disable-effects');
     }
   }, [theme, fontPairing, glowEnabled]);
+
+  // Set HSL Nebula Glow color variables
+  useEffect(() => {
+    document.documentElement.style.setProperty('--nebula-glow-hue', String(nebulaHue));
+  }, [nebulaHue]);
 
   // Restore session if details are stored in localStorage
   useEffect(() => {
@@ -283,12 +291,30 @@ export default function App() {
                   />
                 </div>
 
+                {/* Nebula Glow Hue customizer */}
+                <div className="space-y-1 py-1">
+                  <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-astro-textMuted font-mono">
+                    <span>Nebula Hue</span>
+                    <span className="text-astro-gold font-bold">{nebulaHue}°</span>
+                  </div>
+                  <input 
+                    type="range"
+                    min="0"
+                    max="360"
+                    defaultValue={nebulaHue}
+                    id="settings-nebula-hue-slider"
+                    onChange={(e) => setNebulaHue(parseInt(e.target.value))}
+                    className="w-full h-1 bg-[#0a0b16] rounded-lg appearance-none cursor-pointer accent-astro-gold"
+                  />
+                </div>
+
                 {/* Save button */}
                 <button
                   onClick={() => {
                     const inputVal = document.getElementById('settings-name-input').value || 'Cosmic Traveler';
                     const glowVal = document.getElementById('settings-glow-checkbox').checked;
-                    handleSaveSettings(inputVal, avatar, coordRep, glowVal);
+                    const hueVal = parseInt(document.getElementById('settings-nebula-hue-slider').value || '260');
+                    handleSaveSettings(inputVal, avatar, coordRep, glowVal, hueVal);
                   }}
                   className="w-full py-2.5 bg-gradient-to-r from-astro-gold to-[#fbe087] text-astro-bg rounded-xl text-xs font-bold shadow-goldGlow cursor-pointer hover:scale-[1.01] transition"
                 >

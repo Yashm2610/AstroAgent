@@ -26,8 +26,8 @@ export default function Home({ onStart }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[85vh] text-center px-6 relative overflow-hidden w-full">
       {/* Background glowing orbs */}
-      <div className="absolute top-1/10 left-1/10 h-96 w-96 rounded-full bg-astro-purple opacity-[0.08] blur-[120px] animate-pulse"></div>
-      <div className="absolute bottom-1/10 right-1/10 h-[450px] w-[450px] rounded-full bg-astro-gold opacity-[0.04] blur-[150px] animate-pulse" style={{ animationDuration: '8s' }}></div>
+      <div className="absolute top-1/10 left-1/10 h-96 w-96 rounded-full bg-[var(--nebula-glow-color-1,#7d52ff)] opacity-[0.08] blur-[120px] animate-pulse"></div>
+      <div className="absolute bottom-1/10 right-1/10 h-[450px] w-[450px] rounded-full bg-[var(--nebula-glow-color-2,#dfb73c)] opacity-[0.04] blur-[150px] animate-pulse" style={{ animationDuration: '8s' }}></div>
 
       {/* Floating Constellation Lines / SVG (pure decorative) */}
       <div className="absolute inset-0 pointer-events-none opacity-20">

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --nebula-glow-color-1: hsla(var(--nebula-glow-hue, 260), 75%, 65%, 1);
+  --nebula-glow-color-2: hsla(var(--nebula-glow-hue, 260), 70%, 55%, 1);
+}
+
 @layer base {
   body {
     @apply bg-astro-bg text-astro-textMain antialiased selection:bg-astro-purple selection:text-astro-textMain;
