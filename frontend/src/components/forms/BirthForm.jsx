@@ -262,7 +262,7 @@ export default function BirthForm({ onSuccess }) {
               value={dob}
               onChange={(e) => setDob(e.target.value)}
               onFocus={() => setActiveTip('dob')}
-              className="w-full pl-11 pr-4 py-2.5 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-40 rounded-xl focus:outline-none focus:border-astro-gold focus:ring-1 focus:ring-astro-gold text-astro-textMain font-sans transition-all duration-300 placeholder-opacity-40 text-sm"
+              className="w-full pl-11 pr-4 py-2.5 md:py-3 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-30 rounded-xl focus:outline-none focus:border-astro-gold focus:ring-1 focus:ring-astro-gold focus:shadow-[0_0_10px_rgba(223,183,60,0.12)] text-astro-textMain font-sans transition-all duration-300 placeholder-opacity-40 text-xs md:text-sm"
               required
             />
           </div>
@@ -271,7 +271,7 @@ export default function BirthForm({ onSuccess }) {
         {/* Time Input */}
         <div className="relative">
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-[10px] font-bold text-astro-textMuted uppercase tracking-wider">
+            <label className="block text-[10px] md:text-xs font-bold text-astro-textMuted uppercase tracking-wider">
               Time of Birth
             </label>
             <button 
@@ -283,13 +283,13 @@ export default function BirthForm({ onSuccess }) {
             </button>
           </div>
           <div className="relative">
-            <Clock className="absolute left-3.5 top-3 h-4.5 w-4.5 text-astro-gold" />
+            <Clock className="absolute left-3.5 top-3 h-4.5 w-4.5 text-astro-gold" style={{ top: 'calc(50% - 9px)' }} />
             <input
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
               onFocus={() => setActiveTip('time')}
-              className="w-full pl-11 pr-4 py-2.5 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-40 rounded-xl focus:outline-none focus:border-astro-gold focus:ring-1 focus:ring-astro-gold text-astro-textMain font-sans transition-all duration-300 text-sm"
+              className="w-full pl-11 pr-4 py-2.5 md:py-3 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-30 rounded-xl focus:outline-none focus:border-astro-gold focus:ring-1 focus:ring-astro-gold focus:shadow-[0_0_10px_rgba(223,183,60,0.12)] text-astro-textMain font-sans transition-all duration-300 text-xs md:text-sm"
               required
             />
           </div>
@@ -298,7 +298,7 @@ export default function BirthForm({ onSuccess }) {
         {/* Place Input */}
         <div className="relative">
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-[10px] font-bold text-astro-textMuted uppercase tracking-wider">
+            <label className="block text-[10px] md:text-xs font-bold text-astro-textMuted uppercase tracking-wider">
               Place of Birth (City, Country)
             </label>
             <button 
@@ -310,14 +310,14 @@ export default function BirthForm({ onSuccess }) {
             </button>
           </div>
           <div className="relative">
-            <MapPin className="absolute left-3.5 top-3 h-4.5 w-4.5 text-astro-gold" />
+            <MapPin className="absolute left-3.5 top-3 h-4.5 w-4.5 text-astro-gold" style={{ top: 'calc(50% - 9px)' }} />
             <input
               type="text"
               placeholder="e.g. New York, USA or Mumbai, India"
               value={place}
               onChange={(e) => setPlace(e.target.value)}
               onFocus={() => setActiveTip('place')}
-              className="w-full pl-11 pr-4 py-2.5 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-40 rounded-xl focus:outline-none focus:border-astro-gold focus:ring-1 focus:ring-astro-gold text-astro-textMain placeholder-astro-textMuted placeholder-opacity-40 font-sans transition-all duration-300 text-sm"
+              className="w-full pl-11 pr-4 py-2.5 md:py-3 bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-30 rounded-xl focus:outline-none focus:border-astro-gold focus:ring-1 focus:ring-astro-gold focus:shadow-[0_0_10px_rgba(223,183,60,0.12)] text-astro-textMain placeholder-astro-textMuted placeholder-opacity-40 font-sans transition-all duration-300 text-xs md:text-sm"
               required
             />
           </div>
