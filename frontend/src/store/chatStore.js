@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { setMutedStatus } from '../services/soundEffects';
 
 export const useChatStore = create((set) => ({
   messages: [],
@@ -8,6 +9,8 @@ export const useChatStore = create((set) => ({
   isLoading: false,
   theme: localStorage.getItem('astroagent_theme') || 'indigo',
   fontPairing: localStorage.getItem('astroagent_font') || 'sans',
+  soundMuted: localStorage.getItem('astroagent_muted') === 'true',
+  starTrailDensity: localStorage.getItem('astroagent_star_trail_density') || 'high',
 
   setTheme: (theme) => {
     localStorage.setItem('astroagent_theme', theme);
@@ -17,6 +20,16 @@ export const useChatStore = create((set) => ({
   setFontPairing: (fontPairing) => {
     localStorage.setItem('astroagent_font', fontPairing);
     set({ fontPairing });
+  },
+
+  setSoundMuted: (soundMuted) => {
+    setMutedStatus(soundMuted);
+    set({ soundMuted });
+  },
+
+  setStarTrailDensity: (starTrailDensity) => {
+    localStorage.setItem('astroagent_star_trail_density', starTrailDensity);
+    set({ starTrailDensity });
   },
 
   setBirthDetails: (details) => {

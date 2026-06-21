@@ -40,7 +40,20 @@ export const getDominantElement = (chart) => {
 export const toggleMuteStatus = () => {
   isMuted = !isMuted;
   localStorage.setItem('astroagent_muted', String(isMuted));
+  if (isMuted) {
+    stopAmbientDrone();
+  }
   return isMuted;
+};
+
+export const setMutedStatus = (muted) => {
+  isMuted = muted;
+  localStorage.setItem('astroagent_muted', String(isMuted));
+  if (isMuted) {
+    stopAmbientDrone();
+  } else if (ambientCtx === null) {
+    startAmbientDrone(activeElement);
+  }
 };
 
 export const getMuteStatus = () => {
