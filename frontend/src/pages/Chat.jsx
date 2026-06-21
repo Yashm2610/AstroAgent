@@ -296,8 +296,37 @@ export default function Chat({ onBack }) {
                     <div>Lon: {Number(birthDetails?.lon).toFixed(4)}°</div>
                   </div>
                 </div>
-                <CoordinatesHUD chart={formattedChart} />
-                <Glossary />
+                 <CoordinatesHUD chart={formattedChart} />
+                 
+                 {/* Transit Shifts List */}
+                 <div className="mt-4 space-y-2.5">
+                   <div className="text-[10px] font-bold text-astro-gold uppercase tracking-wider font-mono">Planet Transit Shifts</div>
+                   <div className="grid grid-cols-2 gap-2 max-h-[160px] overflow-y-auto pr-1">
+                     {Object.entries(planets).map(([key, planet]) => {
+                       const symbol = PLANET_SYMBOLS[key] || '★';
+                       const shifts = { sun: 120, moon: 280, mercury: 95, venus: 45, mars: 190, jupiter: 30, saturn: 12, uranus: 4, neptune: 2, pluto: 1, north_node: -18, south_node: -18 };
+                       const SIGN_ORDER = { 'Aries': 0, 'Taurus': 1, 'Gemini': 2, 'Cancer': 3, 'Leo': 4, 'Virgo': 5, 'Libra': 6, 'Scorpio': 7, 'Sagittarius': 8, 'Capricorn': 9, 'Aquarius': 10, 'Pisces': 11 };
+                       const ZODIAC_SIGNS = [ 'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces' ];
+                       const natalLon = (SIGN_ORDER[planet.sign] || 0) * 30 + planet.degree;
+                       const transitLon = (natalLon + (shifts[key] || 0) + 360) % 360;
+                       const transitSign = ZODIAC_SIGNS[Math.floor(transitLon / 30)] || planet.sign;
+                       
+                       return (
+                         <div key={`coords-transit-${key}`} className="flex justify-between items-center text-[9px] p-2 bg-astro-indigo bg-opacity-35 rounded-xl border border-astro-cardBorder border-opacity-5">
+                           <span className="text-astro-textMain font-mono font-medium flex items-center gap-1 capitalize">
+                             <span className="text-astro-gold">{symbol}</span>
+                             <span>{key.replace('_', ' ')}</span>
+                           </span>
+                           <span className="text-astro-textMuted font-mono">
+                             {planet.sign.substring(0, 3)} → <span className="text-astro-gold font-bold">{transitSign.substring(0, 3)}</span>
+                           </span>
+                         </div>
+                       );
+                     })}
+                   </div>
+                 </div>
+
+                 <Glossary />
               </div>
             )}
 
