@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
 import { Compass, Briefcase, Moon, AlertTriangle, Heart } from 'lucide-react';
+import { useChatStore } from '../../store/chatStore';
+import { getDominantElement } from '../../services/soundEffects';
+
+const ELEMENT_CATEGORIES = {
+  fire: 'identity',
+  earth: 'career',
+  air: 'lessons',
+  water: 'love'
+};
 
 const PROMPTS = [
   { text: "What does my Sun sign reveal about my core purpose?", icon: <Compass className="h-3 w-3 text-astro-gold" />, category: "identity" },
@@ -18,6 +27,8 @@ const PROMPTS = [
 
 export default function AstroPrompts({ onSelect, disabled }) {
   const [activeCategory, setActiveCategory] = useState('all');
+  const { birthDetails } = useChatStore();
+  const dominantElement = birthDetails?.chart ? getDominantElement(birthDetails.chart) : null;
 
   const categories = [
     { id: 'all', label: 'All' },
@@ -57,18 +68,32 @@ export default function AstroPrompts({ onSelect, disabled }) {
 
       {/* Suggestion Chips */}
       <div className="flex flex-wrap gap-2 max-h-[85px] overflow-y-auto pr-1">
-        {filteredPrompts.map((prompt, idx) => (
-          <button
-            key={idx}
-            type="button"
-            disabled={disabled}
-            onClick={() => onSelect(prompt.text)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-astro-indigo bg-opacity-30 hover:bg-opacity-50 border border-astro-cardBorder border-opacity-20 hover:border-opacity-40 rounded-xl text-xs text-astro-textMain transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 hover:scale-[1.02] hover:shadow-glow"
-          >
-            {prompt.icon}
-            <span className="font-sans font-medium text-left">{prompt.text}</span>
-          </button>
-        ))}
+        {filteredPrompts.map((prompt, idx) => {
+          const isRecommended = dominantElement && prompt.category === ELEMENT_CATEGORIES[dominantElement];
+          return (
+            <button
+              key={idx}
+              type="button"
+              disabled={disabled}
+              onClick={() => onSelect(prompt.text)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs text-astro-textMain transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 hover:scale-[1.02] hover:shadow-glow ${
+                isRecommended 
+                  ? 'bg-astro-gold bg-opacity-[0.06] border border-astro-gold border-opacity-45 shadow-[0_0_10px_rgba(223,183,60,0.08)]' 
+                  : 'bg-astro-indigo bg-opacity-30 border border-astro-cardBorder border-opacity-20 hover:border-opacity-40'
+              }`}
+            >
+              {prompt.icon}
+              <span className="font-sans font-medium text-left flex items-center gap-1">
+                <span>{prompt.text}</span>
+                {isRecommended && (
+                  <span className="text-[7.5px] font-bold text-astro-gold uppercase tracking-wider bg-astro-gold bg-opacity-10 px-1.5 py-0.5 rounded border border-astro-gold border-opacity-20 flex items-center gap-0.5 ml-1 select-none font-mono">
+                    ✨ Recommended
+                  </span>
+                )}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
