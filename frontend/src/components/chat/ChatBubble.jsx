@@ -167,10 +167,10 @@ export default function ChatBubble({ message }) {
             <ReactMarkdown
               components={{
                 p: ({ node, ...props }) => <p className="mb-2.5 last:mb-0 leading-relaxed" {...props} />,
-                ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-2.5 space-y-1" {...props} />,
-                ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-2.5 space-y-1" {...props} />,
-                li: ({ node, ...props }) => <li className="text-astro-textMain hover:text-astro-gold transition-colors duration-200" {...props} />,
-                strong: ({ node, ...props }) => <strong className="text-astro-gold font-bold bg-astro-indigo bg-opacity-20 px-1 py-0.5 rounded" {...props} />,
+                ul: ({ node, ...props }) => <ul className="list-none pl-0 mb-3.5 space-y-1.5 [&>li]:relative [&>li]:pl-4 [&>li]:before:content-['✦'] [&>li]:before:absolute [&>li]:before:left-0 [&>li]:before:text-astro-gold [&>li]:before:text-[8px] [&>li]:before:top-[0px]" {...props} />,
+                ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-3.5 space-y-1.5" {...props} />,
+                li: ({ node, ...props }) => <li className="text-astro-textMain leading-relaxed text-[13px] hover:text-astro-gold transition-colors duration-250" {...props} />,
+                strong: ({ node, ...props }) => <strong className="text-astro-gold font-extrabold bg-astro-gold bg-opacity-[0.06] border border-astro-gold border-opacity-15 px-1.5 py-0.5 rounded shadow-[0_0_8px_rgba(223,183,60,0.04)]" {...props} />,
                 code: ({ node, ...props }) => <code className="bg-astro-indigo border border-astro-cardBorder border-opacity-25 px-1.5 py-0.5 rounded text-[11px] text-[#ffe596] font-mono" {...props} />,
                 pre: ({ node, ...props }) => <MarkdownPre {...props} />,
                 hr: ({ node, ...props }) => <hr className="border-astro-cardBorder border-opacity-20 my-4" {...props} />,
