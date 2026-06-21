@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useChatStore } from '../../store/chatStore';
 import { api } from '../../services/api';
 import { playCosmicChime } from '../../services/soundEffects';
 import { MapPin, Calendar, Clock, Loader2, Sparkles, HelpCircle } from 'lucide-react';
+
+const MILESTONES = [
+  { label: 'Resolving coordinates via geocoding', icon: '📍' },
+  { label: 'Fetching timezone database offsets', icon: '⏰' },
+  { label: 'Calculating Julian Date & Ephemeris', icon: '🪐' },
+  { label: 'Mapping planetary positions & signs', icon: '✨' },
+  { label: 'Rendering natal houses & aspect grids', icon: '🔮' }
+];
 
 export default function BirthForm({ onSuccess }) {
   const { userId, setBirthDetails } = useChatStore();
@@ -12,6 +20,16 @@ export default function BirthForm({ onSuccess }) {
   const [place, setPlace] = useState('');
   
   const [loading, setLoading] = useState(false);
+  const [milestone, setMilestone] = useState(0);
+  const milestoneIntervalRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (milestoneIntervalRef.current) {
+        clearInterval(milestoneIntervalRef.current);
+      }
+    };
+  }, []);
   const [error, setError] = useState('');
   const [activeTip, setActiveTip] = useState(null);
   const [errorShake, setErrorShake] = useState(false);
@@ -53,6 +71,10 @@ export default function BirthForm({ onSuccess }) {
     }
 
     setLoading(true);
+    setMilestone(0);
+    milestoneIntervalRef.current = setInterval(() => {
+      setMilestone(prev => Math.min(prev + 1, 4));
+    }, 600);
 
     try {
       // 3. Format Date to YYYY/MM/DD expected by backend
@@ -92,7 +114,11 @@ export default function BirthForm({ onSuccess }) {
         'Could not calculate chart details. Please verify the city name and try again.'
       );
     } finally {
+      if (milestoneIntervalRef.current) {
+        clearInterval(milestoneIntervalRef.current);
+      }
       setLoading(false);
+      setMilestone(0);
     }
   };
 
@@ -104,6 +130,58 @@ export default function BirthForm({ onSuccess }) {
 
   const completedFields = [dob, time, place].filter(Boolean).length;
   const progressPercent = Math.round((completedFields / 3) * 100);
+
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0 }}
+        className="w-full max-w-md mx-auto bg-astro-card bg-opacity-95 border border-astro-cardBorder rounded-3xl p-8 shadow-glow relative overflow-hidden flex flex-col items-center justify-center min-h-[420px]"
+      >
+        <div className="absolute top-0 right-0 h-32 w-32 bg-astro-gold opacity-5 blur-3xl rounded-full animate-pulse"></div>
+        <div className="absolute -bottom-10 -left-10 h-32 w-32 bg-astro-purple opacity-5 blur-3xl rounded-full animate-pulse"></div>
+        
+        <div className="relative mb-6 flex flex-col items-center">
+          <div className="h-16 w-16 rounded-full border border-astro-gold border-opacity-35 flex items-center justify-center relative shadow-glow">
+            <Loader2 className="animate-spin h-8 w-8 text-astro-gold" />
+            <div className="absolute -inset-1 rounded-full border border-dashed border-astro-gold border-opacity-20 animate-spin" style={{ animationDuration: '8s' }}></div>
+          </div>
+          <h3 className="text-sm font-bold text-astro-gold uppercase tracking-wider mt-4">Consulting the Stars</h3>
+          <p className="text-[10px] text-astro-textMuted font-mono mt-1">Calibrating birth alignment...</p>
+        </div>
+
+        <div className="w-full space-y-3.5 bg-astro-indigo bg-opacity-20 border border-astro-cardBorder border-opacity-15 p-5 rounded-2xl">
+          {MILESTONES.map((item, index) => {
+            const isCompleted = milestone > index;
+            const isCurrent = milestone === index;
+            return (
+              <div 
+                key={index} 
+                className={`flex items-center gap-3 text-xs transition-all duration-300 ${
+                  isCompleted ? 'text-astro-textMain' : isCurrent ? 'text-astro-gold font-semibold' : 'text-astro-textMuted opacity-45'
+                }`}
+              >
+                <div className="flex-shrink-0 text-sm w-5 h-5 flex items-center justify-center font-mono">
+                  {isCompleted ? (
+                    <span className="text-green-400 font-bold drop-shadow-[0_0_2px_rgba(74,222,128,0.5)]">✓</span>
+                  ) : isCurrent ? (
+                    <Loader2 className="animate-spin h-3.5 w-3.5 text-astro-gold" />
+                  ) : (
+                    <span className="text-[10px] opacity-45">○</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs">{item.icon}</span>
+                  <span className="text-[11px] font-sans">{item.label}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div 
