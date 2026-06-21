@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useChatStore } from '../../store/chatStore';
 
 export default function MouseTrail() {
   const [stars, setStars] = useState([]);
+  const starTrailDensity = useChatStore((state) => state.starTrailDensity);
 
   useEffect(() => {
+    if (starTrailDensity === 'off') return;
+
     const handleMouseMove = (e) => {
       const now = Date.now();
-      // Throttling: only add a star every 40ms to avoid overwhelming performance
+      const throttleMs = starTrailDensity === 'low' ? 120 : 40;
+      const maxStars = starTrailDensity === 'low' ? 5 : 15;
+
       setStars((prev) => {
-        if (prev.length > 0 && now - prev[prev.length - 1].timestamp < 40) {
+        if (prev.length > 0 && now - prev[prev.length - 1].timestamp < throttleMs) {
           return prev;
         }
         const newStar = {
@@ -21,13 +27,13 @@ export default function MouseTrail() {
           rotation: Math.random() * 360,
           color: Math.random() > 0.5 ? '#dfb73c' : '#7d52ff',
         };
-        return [...prev.slice(-15), newStar];
+        return [...prev.slice(-maxStars), newStar];
       });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [starTrailDensity]);
 
   // Filter out expired stars
   useEffect(() => {
