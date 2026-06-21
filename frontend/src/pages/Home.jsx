@@ -131,13 +131,26 @@ export default function Home({ onStart }) {
           </motion.div>
         </div>
 
-        {/* Action Button */}
-        <div className="pt-6 pb-8">
+        {/* Action Button with Cosmic Compass Ring */}
+        <div className="pt-8 pb-8 flex items-center justify-center relative">
+          {/* Rotating Compass Ring */}
+          <div className="absolute h-44 w-44 rounded-full border border-astro-gold border-opacity-10 pointer-events-none rotate-slow flex items-center justify-center">
+            <svg className="w-full h-full text-astro-gold text-opacity-15" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="0.3" strokeDasharray="2 3" />
+              <text x="50" y="8" fontSize="4.5" textAnchor="middle" fill="currentColor" fontWeight="bold">N</text>
+              <text x="50" y="96" fontSize="4.5" textAnchor="middle" fill="currentColor" fontWeight="bold">S</text>
+              <text x="92" y="52" fontSize="4.5" textAnchor="middle" fill="currentColor" fontWeight="bold">E</text>
+              <text x="8" y="52" fontSize="4.5" textAnchor="middle" fill="currentColor" fontWeight="bold">W</text>
+              <line x1="50" y1="12" x2="50" y2="88" stroke="currentColor" strokeWidth="0.2" strokeDasharray="1 1" />
+              <line x1="12" y1="50" x2="88" y2="50" stroke="currentColor" strokeWidth="0.2" strokeDasharray="1 1" />
+            </svg>
+          </div>
+
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(223, 183, 60, 0.35)' }}
             whileTap={{ scale: 0.98 }}
             onClick={onStart}
-            className="px-10 py-4.5 bg-gradient-to-r from-astro-gold to-[#fbe087] hover:from-[#cda22b] hover:to-[#dfb73c] text-astro-bg font-black text-sm tracking-wider uppercase rounded-2xl transition duration-300 shadow-goldGlow cursor-pointer inline-flex items-center gap-2.5"
+            className="px-10 py-4.5 bg-gradient-to-r from-astro-gold to-[#fbe087] hover:from-[#cda22b] hover:to-[#dfb73c] text-astro-bg font-black text-sm tracking-wider uppercase rounded-2xl transition duration-300 shadow-goldGlow cursor-pointer inline-flex items-center gap-2.5 z-10"
           >
             <span>Begin Consultation</span>
             <ArrowRight className="h-4.5 w-4.5" />
