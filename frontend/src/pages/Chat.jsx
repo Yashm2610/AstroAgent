@@ -9,7 +9,7 @@ import ElementBalance from '../components/chat/ElementBalance';
 import AstroPrompts from '../components/chat/AstroPrompts';
 import { PLANET_DESCRIPTIONS, ZODIAC_DESCRIPTIONS } from '../services/astrologyInterpretations';
 import { playMessageChime, getDominantElement, startAmbientDrone, stopAmbientDrone } from '../services/soundEffects';
-import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout, Printer, Heart } from 'lucide-react';
+import { Sparkles, Calendar, Clock, MapPin, Trash2, ArrowLeft, Orbit, Compass, Layout, Printer, Heart, Download } from 'lucide-react';
 import OracleDrawer from '../components/chat/OracleDrawer';
 import HouseAccordion from '../components/chat/HouseAccordion';
 import PlanetaryDignities from '../components/chat/PlanetaryDignities';
@@ -96,6 +96,22 @@ export default function Chat({ onBack }) {
   const [oracleOpen, setOracleOpen] = useState(false);
   const [chartStyle, setChartStyle] = useState('circular'); // 'circular' | 'south'
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleDownloadTranscript = () => {
+    if (!messages || messages.length === 0) return;
+    const text = messages.map(m => {
+      const role = m.role === 'user' ? 'USER' : 'ASTROAGENT';
+      return `[${role}]:\n${m.content}\n\n========================================\n`;
+    }).join('\n');
+    
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `AstroAgent_Consultation_Transcript_${new Date().toISOString().split('T')[0]}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   // Load chat history from SQLite on load
   useEffect(() => {
@@ -479,6 +495,16 @@ export default function Chat({ onBack }) {
                 className="bg-transparent text-astro-gold placeholder-astro-textMuted focus:outline-none w-full border-none outline-none text-[10px] py-0"
               />
             </div>
+
+            <button
+              onClick={handleDownloadTranscript}
+              disabled={!messages || messages.length === 0}
+              className="p-2 rounded-xl bg-astro-indigo bg-opacity-40 border border-astro-cardBorder border-opacity-20 text-astro-textMuted hover:text-astro-gold disabled:opacity-40 disabled:hover:text-astro-textMuted disabled:cursor-not-allowed transition-all duration-300 flex items-center gap-1.5 cursor-pointer text-xs font-semibold shadow-glow"
+              title="Download Chat Transcript"
+            >
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline">Export Chat</span>
+            </button>
 
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
