@@ -164,10 +164,10 @@ export default function Chat({ onBack }) {
   const planets = formattedChart.planets || {};
 
   return (
-    <div className="flex flex-col md:flex-row h-[90vh] max-w-7xl mx-auto w-full gap-6 px-4 py-4 md:py-6 overflow-hidden">
+    <div className="flex flex-col md:flex-row h-[90vh] max-w-7xl 2xl:max-w-[90vw] w-full gap-6 px-4 py-4 md:py-6 overflow-hidden">
       
       {/* Sidebar Panel */}
-      <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-full md:w-80 opacity-100 flex' : 'w-0 h-0 overflow-hidden opacity-0 pointer-events-none md:hidden'} flex-col gap-4 flex-shrink-0 h-full`}>
+      <div className={`transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-full md:w-80 2xl:w-96 opacity-100 flex' : 'w-0 h-0 overflow-hidden opacity-0 pointer-events-none md:hidden'} flex-col gap-4 flex-shrink-0 h-full`}>
         
         {/* Navigation Action */}
         <button
