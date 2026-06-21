@@ -290,8 +290,11 @@ export default function AstroWheel({ chart }) {
         const c1 = planetCoords[p1Key];
         const c2 = planetCoords[p2Key];
         aspectLines.push(
-          <line
+          <motion.line
             key={`aspect-${p1Key}-${p2Key}`}
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.25 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
             x1={c1.x}
             y1={c1.y}
             x2={c2.x}
@@ -299,11 +302,10 @@ export default function AstroWheel({ chart }) {
             stroke={color}
             strokeWidth="0.8"
             strokeDasharray={strokeDash}
-            opacity="0.25"
             className="hover:opacity-85 transition-opacity duration-200 cursor-pointer"
           >
             <title>{`${PLANET_GLYPHS[p1Key]?.name || p1Key} ${label} ${PLANET_GLYPHS[p2Key]?.name || p2Key} (${diff.toFixed(1)}°)`}</title>
-          </line>
+          </motion.line>
         );
       }
     }
@@ -311,13 +313,18 @@ export default function AstroWheel({ chart }) {
 
   // 4. Render planetary icons inside the wheel
   const planetElements = [];
-  Object.entries(chart.planets).forEach(([key, planet]) => {
+  Object.entries(chart.planets).forEach(([key, planet], index) => {
     const coords = planetCoords[key];
     if (!coords) return;
     const glyph = PLANET_GLYPHS[key] || { symbol: '★', color: '#dfb73c', name: key };
 
     planetElements.push(
-      <g key={`planet-node-${key}`}>
+      <motion.g 
+        key={`planet-node-${key}`}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.1 + index * 0.03 }}
+      >
         <motion.circle
           whileHover={{ scale: 1.4 }}
           cx={coords.x}
@@ -340,20 +347,25 @@ export default function AstroWheel({ chart }) {
           {glyph.symbol}
         </text>
         <title>{`NATAL ${glyph.name}: ${planet.degree}° in ${planet.sign} (House ${planet.house})`}</title>
-      </g>
+      </motion.g>
     );
   });
 
   // Render transit planets
   if (showTransits) {
-    Object.entries(transitPositions).forEach(([key, planet]) => {
+    Object.entries(transitPositions).forEach(([key, planet], index) => {
       const coords = transitCoords[key];
       if (!coords) return;
       const glyph = PLANET_GLYPHS[key] || { symbol: '★', name: key };
       const transitColor = '#64b5f6';
 
       planetElements.push(
-        <g key={`transit-node-${key}`}>
+        <motion.g 
+          key={`transit-node-${key}`}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 12, delay: index * 0.03 }}
+        >
           {planetCoords[key] && (
             <line
               x1={planetCoords[key].x}
@@ -387,7 +399,7 @@ export default function AstroWheel({ chart }) {
             {glyph.symbol}
           </text>
           <title>{`TRANSIT ${glyph.name}: ${planet.degree}° in ${planet.sign} (House ${planet.house})`}</title>
-        </g>
+        </motion.g>
       );
     });
   }
