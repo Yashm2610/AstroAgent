@@ -21,6 +21,8 @@ import CoordinatesHUD from '../components/chat/CoordinatesHUD';
 import Glossary from '../components/chat/Glossary';
 import Onboarding from '../components/chat/Onboarding';
 import ZodiacLegend from '../components/chat/ZodiacLegend';
+import SignExplorer from '../components/chat/SignExplorer';
+
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -195,6 +197,12 @@ export default function Chat({ onBack }) {
               className={`flex-shrink-0 px-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer flex-1 ${activeTab === 'journal' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
             >
               Journal
+            </button>
+            <button
+              onClick={() => setActiveTab('signs')}
+              className={`flex-shrink-0 px-1 py-1.5 rounded-lg text-[9px] font-bold tracking-wider uppercase transition cursor-pointer flex-1 ${activeTab === 'signs' ? 'bg-astro-gold text-astro-bg' : 'text-astro-textMuted hover:text-astro-textMain'}`}
+            >
+              Signs
             </button>
           </div>
 
@@ -387,6 +395,11 @@ export default function Chat({ onBack }) {
             {/* JOURNAL TAB */}
             {activeTab === 'journal' && (
               <AstroJournal />
+            )}
+
+            {/* SIGNS TAB */}
+            {activeTab === 'signs' && (
+              <SignExplorer />
             )}
           </div>
 
