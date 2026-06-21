@@ -3,6 +3,53 @@ import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
 import { User, Sparkles, Star, Copy, Check } from 'lucide-react';
 
+const MarkdownPre = ({ children }) => {
+  const [codeCopied, setCodeCopied] = useState(false);
+  
+  const getCodeText = (child) => {
+    if (!child) return '';
+    if (typeof child === 'string') return child;
+    if (Array.isArray(child)) return child.map(getCodeText).join('');
+    if (child.props && child.props.children) return getCodeText(child.props.children);
+    return '';
+  };
+  
+  const codeText = getCodeText(children);
+
+  const copyCode = () => {
+    navigator.clipboard.writeText(codeText);
+    setCodeCopied(true);
+    setTimeout(() => setCodeCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative my-3 border border-astro-cardBorder border-opacity-20 rounded-lg overflow-hidden bg-[#07080f] font-mono">
+      <div className="flex justify-between items-center px-4 py-1.5 bg-[#0a0b16] border-b border-astro-cardBorder border-opacity-15 text-[10px] text-astro-textMuted select-none">
+        <span className="text-[9px] uppercase tracking-wider font-bold">Code</span>
+        <button
+          onClick={copyCode}
+          className="flex items-center gap-1 hover:text-astro-gold transition-colors cursor-pointer focus:outline-none"
+        >
+          {codeCopied ? (
+            <>
+              <Check className="h-2.5 w-2.5 text-green-400" />
+              <span className="text-green-400">Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-2.5 w-2.5" />
+              <span>Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+      <pre className="p-3 overflow-x-auto text-[11px] leading-relaxed text-[#ffe596] m-0 bg-transparent">
+        {children}
+      </pre>
+    </div>
+  );
+};
+
 export default function ChatBubble({ message }) {
   const isUser = message.role === 'user';
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -125,6 +172,7 @@ export default function ChatBubble({ message }) {
                 li: ({ node, ...props }) => <li className="text-astro-textMain hover:text-astro-gold transition-colors duration-200" {...props} />,
                 strong: ({ node, ...props }) => <strong className="text-astro-gold font-bold bg-astro-indigo bg-opacity-20 px-1 py-0.5 rounded" {...props} />,
                 code: ({ node, ...props }) => <code className="bg-astro-indigo border border-astro-cardBorder border-opacity-25 px-1.5 py-0.5 rounded text-[11px] text-[#ffe596] font-mono" {...props} />,
+                pre: ({ node, ...props }) => <MarkdownPre {...props} />,
                 hr: ({ node, ...props }) => <hr className="border-astro-cardBorder border-opacity-20 my-4" {...props} />,
                 h1: ({ node, ...props }) => <h1 className="text-sm font-bold text-astro-gold uppercase tracking-wider mb-2 mt-1" {...props} />,
                 h2: ({ node, ...props }) => <h2 className="text-xs font-bold text-astro-gold uppercase tracking-wider mb-1.5" {...props} />,
