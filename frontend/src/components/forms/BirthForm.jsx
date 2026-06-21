@@ -14,6 +14,15 @@ export default function BirthForm({ onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [activeTip, setActiveTip] = useState(null);
+  const [errorShake, setErrorShake] = useState(false);
+
+  const triggerError = (msg) => {
+    setError(msg);
+    if (msg) {
+      setErrorShake(true);
+      setTimeout(() => setErrorShake(false), 500);
+    }
+  };
 
   const [savedProfiles, setSavedProfiles] = useState(() => {
     return JSON.parse(localStorage.getItem('astroagent_profiles') || '[]');
@@ -31,7 +40,7 @@ export default function BirthForm({ onSuccess }) {
 
     // 1. Basic validation
     if (!dob || !time || !place) {
-      setError('All fields are required to calculate your astronomical alignments.');
+      triggerError('All fields are required to calculate your astronomical alignments.');
       return;
     }
 
@@ -39,7 +48,7 @@ export default function BirthForm({ onSuccess }) {
     const selectedDate = new Date(`${dob}T${time}`);
     const now = new Date();
     if (selectedDate > now) {
-      setError('Date and time of birth cannot be in the future. Please check your entries.');
+      triggerError('Date and time of birth cannot be in the future. Please check your entries.');
       return;
     }
 
@@ -74,11 +83,11 @@ export default function BirthForm({ onSuccess }) {
 
         if (onSuccess) onSuccess();
       } else {
-        setError(response.detail || 'Could not calculate details for this birthplace.');
+        triggerError(response.detail || 'Could not calculate details for this birthplace.');
       }
     } catch (err) {
       console.error(err);
-      setError(
+      triggerError(
         err.response?.data?.detail || 
         'Could not calculate chart details. Please verify the city name and try again.'
       );
@@ -99,7 +108,7 @@ export default function BirthForm({ onSuccess }) {
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      animate={errorShake ? { x: [-10, 10, -10, 10, -5, 5, -2, 2, 0] } : { opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="w-full max-w-md bg-astro-card backdrop-blur-md border border-astro-cardBorder rounded-2xl p-8 shadow-glow pulsing-border"
     >
